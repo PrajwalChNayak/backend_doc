@@ -1,0 +1,445 @@
+{
+  "categories": [
+    {
+      "id": "kubernetes",
+      "title": "Kubernetes",
+      "icon": "⎈",
+      "sections": [
+        {
+          "id": "section-1-introduction",
+          "title": "🎯 Section 1: Introduction to Kubernetes",
+          "summary": "High-level overview of Kubernetes with detailed 1.1–1.5 content embedded.",
+          "content": "## 🎯 Section 1: Introduction to Kubernetes\n\nThis section introduces Kubernetes, why it exists, how it evolved, and when you should (and should not) use it.\n\n---\n\n## 1.1 What is Kubernetes?\n\nKubernetes (also known as K8s) is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications. Originally developed by Google and now maintained by the Cloud Native Computing Foundation (CNCF).\n\n### Why Do We Need It?\n\n- How do you deploy containers across multiple machines?\n- How do you ensure containers are always running?\n- How do you scale containers based on demand?\n- How do you update applications without downtime?\n- How do you manage networking between containers?\n\n### Problems Kubernetes Solves\n\n| Problem | Solution |\n|---------|----------|\n| Manual deployment | Automated deployments with declarative configuration |\n| Application crashes | Self-healing: automatically restarts failed containers |\n| Traffic spikes | Auto-scaling based on CPU, memory, or custom metrics |\n| Downtime during updates | Rolling updates and rollbacks with zero downtime |\n| Resource wastage | Efficient bin-packing of containers on nodes |\n| Service discovery | Built-in DNS and load balancing for services |\n\n### Real World Analogy: Airport Traffic Controller\n\nThink of Kubernetes like an airport traffic controller:\n- Airplanes = Containers (your applications)\n- Runways = Nodes (servers in your cluster)\n- Controller = Kubernetes (the orchestrator)\n- Flight Plan = YAML configuration files\n\nThe controller directs planes to available runways, ensures safe distances, reroutes when blocked, and handles increased traffic automatically.\n\n---\n\n## 1.2 History and Evolution of Kubernetes\n\nFrom Google's internal systems to the world's most popular container orchestration platform.\n\n### The Journey\n\n**Traditional Deployment Era:**\nApplications ran directly on physical servers. Teams over-provisioned hardware to avoid outages, and deployments were slow and manual.\n\n**Virtual Machines Era:**\nHypervisors improved isolation, but each VM carried its own OS, consuming significant resources.\n\n**Early Containerization:**\nTools like LXC and Docker introduced lightweight packaging, yet organizations lacked a unified way to schedule and scale containers.\n\n### Google's Internal Systems\n\n- **Borg:** Google operated massive fleets using Borg, an internal scheduler handling multi-tenant workloads and automatic restarts.\n- **Omega:** A research system exploring shared cluster state and faster scheduling decisions.\n- **Lessons Learned:** Declarative desired state, controllers, and health-driven scheduling could keep thousands of workloads running reliably.\n\n### Key Milestone\n\nKubernetes v1.0 was released on July 21, 2015, marking its readiness for production workloads!\n\n### Current State\n\n- 88% of organizations use containers in production (CNCF Survey 2023).\n- 5.6M+ developers use Kubernetes worldwide.\n- 177 countries with active Kubernetes communities.\n\n---\n\n## 1.3 Kubernetes vs Traditional Deployment\n\nTraditional deployment involves running applications directly on physical servers or VMs with manual provisioning.\n\n### Traditional Deployment Problems\n\n- **Manual processes:** Deployments require human intervention, increasing risk of errors.\n- **Resource wastage:** Servers often over-provisioned for peak loads.\n- **Scalability challenges:** Adding capacity takes time and money.\n- **Downtime during updates:** Updating apps often requires taking servers offline.\n- **Limited automation:** Monitoring and healing are manual.\n\n### Key Differences\n\n| Aspect | Traditional | Kubernetes |\n|--------|------------|------------|\n| Provisioning | Manual hardware/VM setup | Automated scheduling on available nodes |\n| Scaling | Manual addition/removal of servers | Automatic horizontal scaling based on metrics |\n| Reliability | Manual monitoring and restarts | Self-healing with automatic restarts |\n| Updates | Risky manual updates with downtime | Rolling updates with zero-downtime rollbacks |\n| Resource Efficiency | Over-provisioning common | Efficient bin-packing and resource sharing |\n| Portability | Tied to specific hardware or cloud | Portable across clouds and on-premises |\n\n### Cost Impact\n\nCompanies report 40–60% cost savings by switching from traditional deployment to Kubernetes due to better resource utilization!\n\n---\n\n## 1.4 Kubernetes vs Docker Swarm\n\nDocker Swarm is Docker's native clustering and orchestration tool that turns a group of Docker hosts into a single virtual host.\n\n### Docker Swarm Limitations\n\n- Limited scalability: Best for smaller setups.\n- Fewer features: Lacks advanced scheduling and self-healing.\n- Tied to Docker: Works only with Docker containers.\n- Basic monitoring: Built-in tools are minimal.\n- Smaller community: Fewer integrations.\n\n### Key Differences\n\n| Aspect | Docker Swarm | Kubernetes |\n|--------|--------------|------------|\n| Ease of Use | Simpler for Docker users | Steeper learning curve but more powerful |\n| Scalability | Good for small to medium clusters | Excellent for large, complex clusters |\n| Self-Healing | Basic restart policies | Advanced self-healing and rescheduling |\n| Networking | Built-in overlay networks | Rich networking with services, ingress, policies |\n| Storage | Basic volume support | Comprehensive storage orchestration |\n| Ecosystem | Smaller, Docker-focused | Vast ecosystem with CNCF backing |\n| Extensibility | Limited customization | Highly extensible with CRDs and operators |\n\n### Market Share\n\nKubernetes dominates with 88% market share in container orchestration, while Docker Swarm has declined to <5% adoption in production environments.\n\n---\n\n## 1.5 When to Use Kubernetes (and When Not To)\n\nKubernetes is powerful but not always the best fit. Understanding when to use it helps teams make informed decisions.\n\n### When TO Use Kubernetes\n\n- **Large-scale applications:** Apps with many microservices, high traffic, or frequent updates.\n- **Cloud-native development:** Teams building modern apps needing portability across clouds.\n- **Complex workloads:** Stateful apps (databases), batch jobs, or AI/ML pipelines.\n- **DevOps maturity:** Organizations with skilled teams ready to invest in learning.\n- **Multi-environment consistency:** Same deployment model from dev to production.\n\n### When NOT To Use Kubernetes\n\n- **Simple applications:** For single-server apps or prototypes, Docker Compose suffices.\n- **Small teams or startups:** If your team lacks expertise, the learning curve may outweigh benefits.\n- **Limited resources:** Kubernetes requires dedicated control plane resources.\n- **Non-containerized apps:** Not needed for traditional monoliths not packaged in containers.\n- **Time-sensitive projects:** For quick proofs-of-concept, setup time might delay delivery.\n\n### Learning Curve\n\nExpect 2–3 months for teams to become productive with Kubernetes. Plan training and start small!",
+          "codeExamples": []
+        },
+        {
+          "id": "section-2-architecture",
+          "title": "🏗️ Section 2: Kubernetes Architecture",
+          "summary": "Understand how the control plane and nodes work together.",
+          "content": "## 🏗️ Section 2: Kubernetes Architecture\n\n### 2.1 Cluster Architecture Overview\n\n### 2.2 Control Plane Components\n- API Server\n- etcd\n- Scheduler\n- Controller Manager\n- Cloud Controller Manager\n\n### 2.3 Node Components\n- Kubelet\n- Kube-proxy\n- Container Runtime\n\n### 2.4 How Components Communicate",
+          "codeExamples": []
+        },
+        {
+          "id": "section-3-setup",
+          "title": "⚙️ Section 3: Setting Up Kubernetes",
+          "summary": "Local clusters, kubectl, and managed Kubernetes services.",
+          "content": "## ⚙️ Section 3: Setting Up Kubernetes\n\n### 3.1 Local Development Options\n- Minikube\n- Kind (Kubernetes in Docker)\n- Docker Desktop Kubernetes\n\n### 3.2 Installing kubectl\n\n### 3.3 Managed Kubernetes Services\n- Amazon EKS\n- Google GKE\n- Azure AKS\n\n### 3.4 Setting Up a Multi-Node Cluster with kubeadm",
+          "codeExamples": []
+        },
+        {
+          "id": "section-4-core-concepts",
+          "title": "💎 Section 4: Kubernetes Core Concepts",
+          "summary": "Core building blocks like Pods, Deployments, and Services.",
+          "content": "## 💎 Section 4: Kubernetes Core Concepts\n\n### 4.1 Pods\n### 4.2 ReplicaSets\n### 4.3 Deployments\n### 4.4 Services\n### 4.5 Namespaces\n### 4.6 Labels and Selectors\n### 4.7 Annotations",
+          "codeExamples": []
+        },
+        {
+          "id": "section-5-workload-management",
+          "title": "⚡ Section 5: Workload Management",
+          "summary": "Strategies and controllers for managing workloads at scale.",
+          "content": "## ⚡ Section 5: Workload Management\n\n### 5.1 Deployment Strategies\n- Rolling Updates\n- Blue-Green Deployments\n- Canary Deployments\n\n### 5.2 DaemonSets\n### 5.3 StatefulSets\n### 5.4 Jobs and CronJobs\n### 5.5 Horizontal Pod Autoscaler (HPA)\n### 5.6 Vertical Pod Autoscaler (VPA)",
+          "codeExamples": []
+        },
+        {
+          "id": "section-6-networking",
+          "title": "🌐 Section 6: Networking in Kubernetes",
+          "summary": "Networking model, Services, Ingress, policies, and service mesh.",
+          "content": "## 🌐 Section 6: Networking in Kubernetes\n\n### 6.1 Kubernetes Networking Model\n\n### 6.2 Service Types\n- ClusterIP\n- NodePort\n- LoadBalancer\n- ExternalName\n\n### 6.3 Ingress Controllers and Resources\n### 6.4 Network Policies\n### 6.5 DNS in Kubernetes\n### 6.6 Service Mesh Introduction (Istio, Linkerd)",
+          "codeExamples": []
+        },
+        {
+          "id": "section-7-storage",
+          "title": "💾 Section 7: Storage in Kubernetes",
+          "summary": "Volumes, persistent storage, and configuration data.",
+          "content": "## 💾 Section 7: Storage in Kubernetes\n\n### 7.1 Volumes and Volume Types\n### 7.2 Persistent Volumes (PV)\n### 7.3 Persistent Volume Claims (PVC)\n### 7.4 Storage Classes\n### 7.5 Dynamic Provisioning\n### 7.6 ConfigMaps\n### 7.7 Secrets",
+          "codeExamples": []
+        },
+        {
+          "id": "section-8-configuration-management",
+          "title": "🔧 Section 8: Configuration Management",
+          "summary": "Manage configuration, resources, and pod priorities.",
+          "content": "## 🔧 Section 8: Configuration Management\n\n### 8.1 Environment Variables\n### 8.2 ConfigMaps (Deep Dive)\n### 8.3 Secrets (Deep Dive)\n### 8.4 Resource Requests and Limits\n### 8.5 Pod Priority and Preemption",
+          "codeExamples": []
+        },
+        {
+          "id": "section-9-security",
+          "title": "🛡️ Section 9: Security in Kubernetes",
+          "summary": "Security model, RBAC, pod security, and image protection.",
+          "content": "## 🛡️ Section 9: Security in Kubernetes\n\n### 9.1 Authentication and Authorization\n### 9.2 Role-Based Access Control (RBAC)\n### 9.3 Service Accounts\n### 9.4 Pod Security Standards\n### 9.5 Network Policies for Security\n### 9.6 Secrets Management Best Practices\n### 9.7 Image Security and Scanning",
+          "codeExamples": []
+        },
+        {
+          "id": "section-10-monitoring-logging",
+          "title": "📊 Section 10: Monitoring and Logging",
+          "summary": "Monitor clusters and applications, and manage logs.",
+          "content": "## 📊 Section 10: Monitoring and Logging\n\n### 10.1 Monitoring with Prometheus\n### 10.2 Visualization with Grafana\n### 10.3 Logging Architecture\n### 10.4 EFK/ELK Stack Setup\n### 10.5 Application Health Checks\n- Liveness Probes\n- Readiness Probes\n- Startup Probes",
+          "codeExamples": []
+        },
+        {
+          "id": "section-11-helm",
+          "title": "📦 Section 11: Helm - Kubernetes Package Manager",
+          "summary": "Use Helm to package, share, and manage Kubernetes apps.",
+          "content": "## 📦 Section 11: Helm - Kubernetes Package Manager\n\n### 11.1 Introduction to Helm\n### 11.2 Helm Charts Structure\n### 11.3 Installing and Managing Charts\n### 11.4 Creating Custom Helm Charts\n### 11.5 Helm Repositories\n### 11.6 Helm Best Practices",
+          "codeExamples": []
+        },
+        {
+          "id": "section-12-cicd",
+          "title": "🚀 Section 12: CI/CD with Kubernetes",
+          "summary": "GitOps, CD tools, and building robust pipelines.",
+          "content": "## 🚀 Section 12: CI/CD with Kubernetes\n\n### 12.1 GitOps Principles\n### 12.2 ArgoCD\n### 12.3 FluxCD\n### 12.4 Jenkins with Kubernetes\n### 12.5 GitHub Actions with Kubernetes\n### 12.6 Building CI/CD Pipelines",
+          "codeExamples": []
+        },
+        {
+          "id": "section-13-advanced-topics",
+          "title": "🎓 Section 13: Advanced Topics",
+          "summary": "Deep dive into CRDs, operators, and multi-cluster setups.",
+          "content": "## 🎓 Section 13: Advanced Topics\n\n### 13.1 Custom Resource Definitions (CRDs)\n### 13.2 Operators\n### 13.3 Admission Controllers\n### 13.4 API Aggregation\n### 13.5 Multi-Cluster Management\n### 13.6 Federation",
+          "codeExamples": []
+        },
+        {
+          "id": "section-14-troubleshooting",
+          "title": "🔍 Section 14: Troubleshooting and Debugging",
+          "summary": "Systematic debugging of pods, services, networking, and logs.",
+          "content": "## 🔍 Section 14: Troubleshooting and Debugging\n\n### 14.1 Common Issues and Solutions\n### 14.2 Debugging Pods\n### 14.3 Debugging Services\n### 14.4 Debugging Networking\n### 14.5 Using kubectl Effectively\n### 14.6 Log Analysis Techniques",
+          "codeExamples": []
+        },
+        {
+          "id": "section-15-best-practices",
+          "title": "✅ Section 15: Best Practices and Production Readiness",
+          "summary": "Checklist and patterns for running Kubernetes in production.",
+          "content": "## ✅ Section 15: Best Practices and Production Readiness\n\n### 15.1 Production Checklist\n### 15.2 High Availability Setup\n### 15.3 Disaster Recovery\n### 15.4 Cost Optimization\n### 15.5 Performance Tuning\n### 15.6 Documentation and Runbooks",
+          "codeExamples": []
+        },
+
+        {
+          "id": "cluster-architecture",
+          "title": "Cluster Architecture Overview",
+          "summary": "Think of a Kubernetes cluster as a city - control plane is city hall, worker nodes are neighborhoods.",
+          "content": "## Cluster Architecture Overview\n\nImagine a Kubernetes cluster as a team of computers working together. Some machines focus on decisions (the control plane) while others run the apps (worker nodes).\n\n### Architecture Overview\n\nThe cluster follows a 'brain and body' model:\n- **Control Plane (Brain):** Makes decisions and tracks what the cluster should look like\n- **Worker Nodes (Body):** Carry out instructions by running containers\n\n### Main Components\n\n**Control Plane:**\n- API Server: The front door accepting user commands\n- etcd: The source of truth storing desired state\n- Scheduler: Decides which node should run a new pod\n- Controller Manager: Watches and corrects drift from desired state\n- Cloud Controller Manager: Integrates with cloud providers\n\n**Worker Nodes:**\n- Kubelet: Keeps an eye on pod workloads and reports health\n- Kube-proxy: Handles networking so services can reach pods\n- Container Runtime: Downloads and runs container images\n\n### Scale Achievement\n\nProduction Kubernetes clusters can manage 5,000+ nodes and 150,000+ pods simultaneously!",
+          "codeExamples": [
+            {
+              "title": "Check Cluster Nodes",
+              "language": "bash",
+              "code": "# List all nodes in the cluster\nkubectl get nodes\n\n# Get detailed info about a node\nkubectl describe node <node-name>\n\n# Check cluster component status\nkubectl get componentstatuses"
+            }
+          ]
+        },
+        {
+          "id": "control-plane",
+          "title": "Control Plane Components",
+          "summary": "The control plane orchestrates every aspect of your cluster - from accepting commands to scheduling workloads.",
+          "content": "## Control Plane Components\n\nThe control plane is the smart operations center for your cluster. It keeps a notebook of what should be running (desired state), listens to commands, and tells each worker node how to behave.\n\n### API Server\n\nThe front door and translator. Every request—kubectl apply, dashboard clicks, or automated pipelines—goes through it.\n\n- Makes sure requests are allowed (authentication/authorization)\n- Stores the desired state in etcd\n- Lets components 'watch' for changes\n\n**Security Note:** The API Server is the gateway to your cluster - always enable authentication, authorization, and audit logging!\n\n### etcd\n\nThe notebook where the control plane writes everything it should remember.\n\n- Keeps the desired state (Pods, Services, Secrets, ConfigMaps)\n- Data is stored on multiple control plane nodes for redundancy\n- **Critical:** Always maintain regular backups! Losing etcd = losing your entire cluster configuration\n\n### Controller Manager\n\nA collection of small guardians. Each controller watches one aspect.\n\n- Constantly checks etcd and actual cluster state\n- Steps in when things drift apart\n- Examples: ReplicaSet controller keeps pod counts steady\n\n**Auto Healing:** Controllers run reconciliation loops every 30 seconds!\n\n### Scheduler\n\nThe placement assistant deciding which worker node is the best fit for new pods.\n\n- Looks at available resources (CPU, memory)\n- Respects policies (taints/tolerations, affinity)\n- Spreads pods evenly across nodes",
+          "codeExamples": [
+            {
+              "title": "Inspect Control Plane",
+              "language": "bash",
+              "code": "# Check API server health\nkubectl cluster-info\n\n# View etcd members (if accessible)\nkubectl get endpoints -n kube-system\n\n# List controller manager pods\nkubectl get pods -n kube-system -l component=kube-controller-manager"
+            }
+          ]
+        },
+        {
+          "id": "node-components",
+          "title": "Node Components",
+          "summary": "Worker node components that run and maintain pods on each machine.",
+          "content": "## Node Components\n\nWorker nodes are the machines that actually run your containerized applications. Each node has several components that work together.\n\n### Kubelet\n\nThe primary node agent running on each worker node.\n\n- Receives pod specifications from the API server\n- Ensures containers are running and healthy\n- Reports node and pod status back to the control plane\n- Manages container lifecycle (start, stop, restart)\n\n### Kube-proxy\n\nNetwork proxy running on each node implementing Kubernetes Service concepts.\n\n- Maintains network rules for pod communication\n- Handles load balancing across service endpoints\n- Supports TCP, UDP, and SCTP protocols\n\n### Container Runtime\n\nThe software responsible for running containers.\n\n- **containerd:** Industry-standard runtime (most common)\n- **CRI-O:** Lightweight runtime for Kubernetes\n- **Docker Engine:** (deprecated as runtime, but images still work)\n\n### How They Work Together\n\n1. API Server tells Kubelet to run a pod\n2. Kubelet instructs Container Runtime to pull image and start container\n3. Kube-proxy sets up networking rules\n4. Kubelet monitors health and reports back",
+          "codeExamples": [
+            {
+              "title": "Inspect Node Components",
+              "language": "bash",
+              "code": "# Check kubelet status on a node\nsystemctl status kubelet\n\n# View kube-proxy pods\nkubectl get pods -n kube-system -l k8s-app=kube-proxy\n\n# Check container runtime\nkubectl get nodes -o wide"
+            }
+          ]
+        },
+        {
+          "id": "local-setup",
+          "title": "Local Development Options",
+          "summary": "Set up Kubernetes locally with Minikube, Kind, or Docker Desktop.",
+          "content": "## Local Development Options\n\nRun Kubernetes on your local machine for development and testing.\n\n### Minikube\n\nThe most popular local Kubernetes solution.\n\n- Creates a single-node cluster in a VM or container\n- Supports multiple container runtimes\n- Easy add-ons for dashboard, ingress, metrics\n\n### Kind (Kubernetes in Docker)\n\nRuns Kubernetes clusters using Docker containers as nodes.\n\n- Fast cluster creation and deletion\n- Multi-node cluster support\n- Great for CI/CD pipelines\n\n### Docker Desktop Kubernetes\n\nBuilt-in Kubernetes for Docker Desktop users.\n\n- One-click enable in Docker Desktop settings\n- Integrated with Docker tools\n- Best for simple local development\n\n### Comparison\n\n| Tool | Best For | Multi-Node | Resource Usage |\n|------|----------|------------|----------------|\n| Minikube | General development | Add-on | Medium |\n| Kind | CI/CD, testing | Yes | Low |\n| Docker Desktop | Quick start | No | Medium |",
+          "codeExamples": [
+            {
+              "title": "Minikube Setup",
+              "language": "bash",
+              "code": "# Install minikube (macOS)\nbrew install minikube\n\n# Start a cluster\nminikube start\n\n# Enable dashboard\nminikube addons enable dashboard\nminikube dashboard\n\n# Stop cluster\nminikube stop"
+            },
+            {
+              "title": "Kind Setup",
+              "language": "bash",
+              "code": "# Install kind\nbrew install kind\n\n# Create a cluster\nkind create cluster --name my-cluster\n\n# Create multi-node cluster\ncat <<EOF | kind create cluster --config=-\nkind: Cluster\napiVersion: kind.x-k8s.io/v1alpha4\nnodes:\n- role: control-plane\n- role: worker\n- role: worker\nEOF\n\n# Delete cluster\nkind delete cluster --name my-cluster"
+            }
+          ]
+        },
+        {
+          "id": "kubectl",
+          "title": "Installing kubectl",
+          "summary": "The Kubernetes command-line tool for interacting with clusters.",
+          "content": "## Installing kubectl\n\nkubectl is the command-line tool for interacting with Kubernetes clusters. It's your primary interface for deploying applications, inspecting resources, and managing cluster operations.\n\n### Installation\n\n**macOS:**\n```bash\nbrew install kubectl\n```\n\n**Linux:**\n```bash\ncurl -LO \"https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl\"\nchmod +x kubectl\nsudo mv kubectl /usr/local/bin/\n```\n\n**Windows:**\n```powershell\nchoco install kubernetes-cli\n```\n\n### Configuration\n\nkubectl uses a kubeconfig file (default: `~/.kube/config`) to store cluster connection details.\n\n### Essential Commands\n\n- `kubectl get` - List resources\n- `kubectl describe` - Show detailed info\n- `kubectl apply` - Apply configuration\n- `kubectl delete` - Remove resources\n- `kubectl logs` - View container logs\n- `kubectl exec` - Execute commands in containers",
+          "codeExamples": [
+            {
+              "title": "kubectl Basics",
+              "language": "bash",
+              "code": "# Check version\nkubectl version --client\n\n# View cluster info\nkubectl cluster-info\n\n# Get all resources\nkubectl get all --all-namespaces\n\n# Apply a manifest\nkubectl apply -f deployment.yaml\n\n# View logs\nkubectl logs pod-name -f\n\n# Execute into a pod\nkubectl exec -it pod-name -- /bin/sh"
+            }
+          ]
+        },
+        {
+          "id": "managed-services",
+          "title": "Managed Kubernetes Services",
+          "summary": "Cloud-managed Kubernetes: EKS, GKE, and AKS.",
+          "content": "## Managed Kubernetes Services\n\nMajor cloud providers offer managed Kubernetes services that handle control plane operations.\n\n### Amazon EKS (Elastic Kubernetes Service)\n\n- Managed control plane across multiple AZs\n- Deep AWS integration (IAM, VPC, ALB)\n- Supports EC2 and Fargate (serverless) nodes\n\n### Google GKE (Google Kubernetes Engine)\n\n- The most mature managed K8s service\n- Autopilot mode for fully managed nodes\n- Excellent integration with Google Cloud services\n\n### Azure AKS (Azure Kubernetes Service)\n\n- Free control plane (pay only for nodes)\n- Azure AD integration for RBAC\n- Azure DevOps and GitHub Actions integration\n\n### Comparison\n\n| Feature | EKS | GKE | AKS |\n|---------|-----|-----|-----|\n| Control Plane Cost | $0.10/hr | Free (Standard) | Free |\n| Serverless Nodes | Fargate | Autopilot | Virtual Nodes |\n| Multi-cluster | Yes | Yes | Yes |\n| Max Nodes | 5,000 | 15,000 | 5,000 |",
+          "codeExamples": [
+            {
+              "title": "EKS Cluster Creation",
+              "language": "bash",
+              "code": "# Create EKS cluster with eksctl\neksctl create cluster \\\n  --name my-cluster \\\n  --region us-west-2 \\\n  --nodes 3 \\\n  --node-type t3.medium\n\n# Update kubeconfig\naws eks update-kubeconfig --name my-cluster --region us-west-2"
+            },
+            {
+              "title": "GKE Cluster Creation",
+              "language": "bash",
+              "code": "# Create GKE cluster\ngcloud container clusters create my-cluster \\\n  --zone us-central1-a \\\n  --num-nodes 3 \\\n  --machine-type e2-medium\n\n# Get credentials\ngcloud container clusters get-credentials my-cluster --zone us-central1-a"
+            }
+          ]
+        },
+        {
+          "id": "pods",
+          "title": "Pods",
+          "summary": "The smallest deployable unit in Kubernetes - one or more containers sharing resources.",
+          "content": "## Pods\n\nA Pod is the smallest deployable unit in Kubernetes. It represents a single instance of a running process and can contain one or more containers.\n\n### Key Concepts\n\n- **Single container pods:** Most common pattern, one container per pod\n- **Multi-container pods:** Sidecar patterns for logging, proxies, etc.\n- **Shared resources:** Containers in a pod share network namespace and storage\n- **Ephemeral:** Pods are designed to be disposable and replaceable\n\n### Pod Lifecycle\n\n1. **Pending:** Pod accepted but containers not created\n2. **Running:** At least one container is running\n3. **Succeeded:** All containers completed successfully\n4. **Failed:** At least one container failed\n5. **Unknown:** Pod state cannot be determined\n\n### Best Practices\n\n- Don't create pods directly; use Deployments\n- One application per pod\n- Use resource requests and limits\n- Define health checks (liveness/readiness probes)",
+          "codeExamples": [
+            {
+              "title": "Pod Definition",
+              "language": "yaml",
+              "code": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: my-app\n  labels:\n    app: my-app\n    tier: frontend\nspec:\n  containers:\n    - name: app\n      image: nginx:1.25\n      ports:\n        - containerPort: 80\n      resources:\n        requests:\n          memory: \"64Mi\"\n          cpu: \"250m\"\n        limits:\n          memory: \"128Mi\"\n          cpu: \"500m\"\n      livenessProbe:\n        httpGet:\n          path: /health\n          port: 80\n        initialDelaySeconds: 10\n        periodSeconds: 5"
+            }
+          ]
+        },
+        {
+          "id": "replicasets",
+          "title": "ReplicaSets",
+          "summary": "Ensures a specified number of pod replicas are running at any time.",
+          "content": "## ReplicaSets\n\nA ReplicaSet ensures that a specified number of pod replicas are running at any given time. It's the mechanism behind scaling in Kubernetes.\n\n### How It Works\n\n- Monitors pods matching its selector\n- Creates new pods if count is below desired\n- Terminates pods if count exceeds desired\n- Replaces failed or deleted pods automatically\n\n### Key Fields\n\n- **replicas:** Desired number of pods\n- **selector:** How to identify pods to manage\n- **template:** Pod specification for creating new pods\n\n### Important Note\n\nYou rarely create ReplicaSets directly. Deployments manage ReplicaSets for you, adding rolling update capabilities.\n\n### Use Cases\n\n- High availability (multiple replicas)\n- Horizontal scaling\n- Self-healing (automatic pod replacement)",
+          "codeExamples": [
+            {
+              "title": "ReplicaSet Definition",
+              "language": "yaml",
+              "code": "apiVersion: apps/v1\nkind: ReplicaSet\nmetadata:\n  name: frontend\n  labels:\n    app: frontend\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: frontend\n  template:\n    metadata:\n      labels:\n        app: frontend\n    spec:\n      containers:\n        - name: nginx\n          image: nginx:1.25\n          ports:\n            - containerPort: 80"
+            }
+          ]
+        },
+        {
+          "id": "deployments",
+          "title": "Deployments",
+          "summary": "Declarative updates for Pods and ReplicaSets with rolling updates and rollbacks.",
+          "content": "## Deployments\n\nDeployments provide declarative updates for Pods and ReplicaSets. They're the recommended way to manage stateless applications.\n\n### Features\n\n- **Rolling updates:** Gradually replace old pods with new ones\n- **Rollbacks:** Revert to previous versions instantly\n- **Scaling:** Easy horizontal scaling\n- **Self-healing:** Automatic pod replacement\n- **History:** Maintains revision history\n\n### Update Strategies\n\n**RollingUpdate (default):**\n- Gradually replaces pods\n- Zero downtime\n- Configurable with maxSurge and maxUnavailable\n\n**Recreate:**\n- Terminates all pods before creating new ones\n- Brief downtime\n- Use when you can't run two versions simultaneously\n\n### Common Operations\n\n```bash\n# Scale deployment\nkubectl scale deployment my-app --replicas=5\n\n# Update image\nkubectl set image deployment/my-app app=nginx:1.26\n\n# Rollback\nkubectl rollout undo deployment/my-app\n\n# Check status\nkubectl rollout status deployment/my-app\n```",
+          "codeExamples": [
+            {
+              "title": "Deployment with Rolling Update",
+              "language": "yaml",
+              "code": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: my-app\nspec:\n  replicas: 3\n  strategy:\n    type: RollingUpdate\n    rollingUpdate:\n      maxSurge: 1\n      maxUnavailable: 0\n  selector:\n    matchLabels:\n      app: my-app\n  template:\n    metadata:\n      labels:\n        app: my-app\n    spec:\n      containers:\n        - name: app\n          image: my-app:v1.0.0\n          ports:\n            - containerPort: 8080\n          readinessProbe:\n            httpGet:\n              path: /ready\n              port: 8080\n            initialDelaySeconds: 5\n            periodSeconds: 5"
+            }
+          ]
+        },
+        {
+          "id": "services",
+          "title": "Services",
+          "summary": "Expose applications running on pods with stable networking and load balancing.",
+          "content": "## Services\n\nA Service is an abstraction that defines a logical set of Pods and a policy to access them. Services enable stable networking for ephemeral pods.\n\n### Why Services?\n\n- Pods have dynamic IP addresses that change on restart\n- Services provide stable DNS names and IP addresses\n- Built-in load balancing across pod replicas\n- Service discovery within the cluster\n\n### Service Types\n\n**ClusterIP (default):**\n- Internal cluster IP only\n- Accessible only within the cluster\n- Use for internal microservice communication\n\n**NodePort:**\n- Exposes service on each node's IP at a static port\n- Accessible from outside the cluster\n- Port range: 30000-32767\n\n**LoadBalancer:**\n- Provisions cloud load balancer\n- External IP for outside access\n- Use in cloud environments\n\n**ExternalName:**\n- Maps service to external DNS name\n- No proxying, just DNS CNAME record",
+          "codeExamples": [
+            {
+              "title": "Service Types Examples",
+              "language": "yaml",
+              "code": "# ClusterIP Service\napiVersion: v1\nkind: Service\nmetadata:\n  name: my-app-internal\nspec:\n  type: ClusterIP\n  selector:\n    app: my-app\n  ports:\n    - port: 80\n      targetPort: 8080\n---\n# LoadBalancer Service\napiVersion: v1\nkind: Service\nmetadata:\n  name: my-app-external\nspec:\n  type: LoadBalancer\n  selector:\n    app: my-app\n  ports:\n    - port: 80\n      targetPort: 8080"
+            }
+          ]
+        },
+        {
+          "id": "namespaces",
+          "title": "Namespaces",
+          "summary": "Virtual clusters within a physical cluster for resource isolation and organization.",
+          "content": "## Namespaces\n\nNamespaces provide a mechanism for isolating groups of resources within a single cluster. They're like virtual clusters.\n\n### Use Cases\n\n- **Environment separation:** dev, staging, production\n- **Team isolation:** different teams' workloads\n- **Resource quotas:** limit resources per namespace\n- **Access control:** RBAC policies per namespace\n\n### Default Namespaces\n\n- **default:** Where resources go if no namespace specified\n- **kube-system:** Kubernetes system components\n- **kube-public:** Publicly readable resources\n- **kube-node-lease:** Node heartbeat data\n\n### Best Practices\n\n- Don't use 'default' namespace in production\n- Use consistent naming conventions\n- Apply resource quotas and limit ranges\n- Set up network policies between namespaces",
+          "codeExamples": [
+            {
+              "title": "Namespace Operations",
+              "language": "bash",
+              "code": "# Create namespace\nkubectl create namespace production\n\n# List namespaces\nkubectl get namespaces\n\n# Set default namespace for context\nkubectl config set-context --current --namespace=production\n\n# Deploy to specific namespace\nkubectl apply -f deployment.yaml -n production\n\n# Get resources in namespace\nkubectl get all -n production"
+            },
+            {
+              "title": "Namespace with ResourceQuota",
+              "language": "yaml",
+              "code": "apiVersion: v1\nkind: Namespace\nmetadata:\n  name: production\n  labels:\n    env: production\n---\napiVersion: v1\nkind: ResourceQuota\nmetadata:\n  name: production-quota\n  namespace: production\nspec:\n  hard:\n    requests.cpu: \"10\"\n    requests.memory: 20Gi\n    limits.cpu: \"20\"\n    limits.memory: 40Gi\n    pods: \"50\""
+            }
+          ]
+        },
+        {
+          "id": "configmaps-secrets",
+          "title": "ConfigMaps and Secrets",
+          "summary": "Manage configuration data and sensitive information separately from container images.",
+          "content": "## ConfigMaps and Secrets\n\nConfigMaps and Secrets let you decouple configuration from container images, making applications more portable.\n\n### ConfigMaps\n\nStore non-confidential configuration data as key-value pairs.\n\n**Use cases:**\n- Environment-specific settings\n- Configuration files\n- Command-line arguments\n\n### Secrets\n\nStore sensitive data like passwords, tokens, and keys.\n\n**Types:**\n- Opaque (generic)\n- kubernetes.io/tls (TLS certificates)\n- kubernetes.io/dockerconfigjson (registry credentials)\n\n### Usage Methods\n\n1. **Environment variables:** Inject as env vars\n2. **Volume mounts:** Mount as files\n3. **Command arguments:** Use in container commands\n\n### Security Note\n\nSecrets are base64 encoded, NOT encrypted! For production:\n- Enable encryption at rest\n- Use external secret managers (Vault, AWS Secrets Manager)\n- Limit RBAC access to secrets",
+          "codeExamples": [
+            {
+              "title": "ConfigMap and Secret Usage",
+              "language": "yaml",
+              "code": "# ConfigMap\napiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: app-config\ndata:\n  DATABASE_HOST: \"postgres.default.svc\"\n  LOG_LEVEL: \"info\"\n  config.json: |\n    {\n      \"feature_flags\": {\n        \"new_ui\": true\n      }\n    }\n---\n# Secret\napiVersion: v1\nkind: Secret\nmetadata:\n  name: app-secrets\ntype: Opaque\nstringData:\n  DATABASE_PASSWORD: \"super-secret-password\"\n  API_KEY: \"my-api-key\"\n---\n# Pod using ConfigMap and Secret\napiVersion: v1\nkind: Pod\nmetadata:\n  name: my-app\nspec:\n  containers:\n    - name: app\n      image: my-app:v1\n      envFrom:\n        - configMapRef:\n            name: app-config\n        - secretRef:\n            name: app-secrets\n      volumeMounts:\n        - name: config-volume\n          mountPath: /etc/config\n  volumes:\n    - name: config-volume\n      configMap:\n        name: app-config"
+            }
+          ]
+        },
+        {
+          "id": "ingress",
+          "title": "Ingress Controllers",
+          "summary": "HTTP/HTTPS routing, TLS termination, and virtual hosting for external access.",
+          "content": "## Ingress Controllers and Resources\n\nIngress exposes HTTP and HTTPS routes from outside the cluster to services within the cluster. Traffic routing is controlled by rules defined in the Ingress resource.\n\n### Why Ingress?\n\n- Single entry point for multiple services\n- Path-based and host-based routing\n- TLS/SSL termination\n- Name-based virtual hosting\n- Load balancing\n\n### Ingress Controllers\n\nAn Ingress resource requires an Ingress Controller to work. Popular options:\n\n- **NGINX Ingress Controller:** Most widely used\n- **Traefik:** Cloud-native with automatic discovery\n- **HAProxy:** High performance\n- **AWS ALB Ingress Controller:** For EKS\n- **GCE Ingress Controller:** For GKE\n\n### Features\n\n- URL rewriting\n- Rate limiting\n- Authentication\n- Canary deployments\n- WebSocket support",
+          "codeExamples": [
+            {
+              "title": "Ingress with TLS",
+              "language": "yaml",
+              "code": "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: my-ingress\n  annotations:\n    nginx.ingress.kubernetes.io/rewrite-target: /\n    cert-manager.io/cluster-issuer: letsencrypt-prod\nspec:\n  ingressClassName: nginx\n  tls:\n    - hosts:\n        - myapp.example.com\n      secretName: myapp-tls\n  rules:\n    - host: myapp.example.com\n      http:\n        paths:\n          - path: /api\n            pathType: Prefix\n            backend:\n              service:\n                name: api-service\n                port:\n                  number: 80\n          - path: /\n            pathType: Prefix\n            backend:\n              service:\n                name: frontend-service\n                port:\n                  number: 80"
+            }
+          ]
+        },
+        {
+          "id": "hpa",
+          "title": "Horizontal Pod Autoscaler",
+          "summary": "Automatically scale workloads based on CPU, memory, or custom metrics.",
+          "content": "## Horizontal Pod Autoscaler (HPA)\n\nHPA automatically scales the number of pod replicas based on observed metrics like CPU utilization, memory usage, or custom metrics.\n\n### How It Works\n\n1. HPA controller queries metrics every 15 seconds (configurable)\n2. Calculates desired replica count based on current vs target metrics\n3. Scales deployment up or down accordingly\n4. Respects minReplicas and maxReplicas bounds\n\n### Metrics Sources\n\n- **Resource metrics:** CPU, memory (requires metrics-server)\n- **Custom metrics:** Application-specific metrics\n- **External metrics:** Metrics from outside the cluster\n\n### Requirements\n\n- Metrics Server installed in cluster\n- Resource requests defined on pods\n- HPA resource targeting the deployment\n\n### Best Practices\n\n- Set appropriate min/max replicas\n- Use requests (not limits) for scaling decisions\n- Combine with PodDisruptionBudget\n- Consider scale-down stabilization",
+          "codeExamples": [
+            {
+              "title": "HPA Configuration",
+              "language": "yaml",
+              "code": "apiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: my-app-hpa\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: my-app\n  minReplicas: 2\n  maxReplicas: 10\n  metrics:\n    - type: Resource\n      resource:\n        name: cpu\n        target:\n          type: Utilization\n          averageUtilization: 70\n    - type: Resource\n      resource:\n        name: memory\n        target:\n          type: Utilization\n          averageUtilization: 80\n  behavior:\n    scaleDown:\n      stabilizationWindowSeconds: 300\n      policies:\n        - type: Percent\n          value: 10\n          periodSeconds: 60"
+            }
+          ]
+        },
+        {
+          "id": "statefulsets",
+          "title": "StatefulSets",
+          "summary": "Manage stateful applications with stable network identities and persistent storage.",
+          "content": "## StatefulSets\n\nStatefulSets manage stateful applications that require stable, unique network identifiers, stable persistent storage, and ordered deployment and scaling.\n\n### Use Cases\n\n- Databases (MySQL, PostgreSQL, MongoDB)\n- Message queues (Kafka, RabbitMQ)\n- Distributed systems (Elasticsearch, ZooKeeper)\n\n### Features\n\n**Stable Network Identity:**\n- Pods get predictable names: `<statefulset-name>-<ordinal>`\n- Stable DNS: `<pod-name>.<service-name>.<namespace>.svc.cluster.local`\n\n**Stable Storage:**\n- Each pod gets its own PersistentVolumeClaim\n- Storage persists across pod rescheduling\n\n**Ordered Operations:**\n- Pods created in order (0, 1, 2...)\n- Pods deleted in reverse order\n- Updates applied one at a time\n\n### StatefulSet vs Deployment\n\n| Feature | Deployment | StatefulSet |\n|---------|------------|-------------|\n| Pod names | Random | Ordered (app-0, app-1) |\n| Storage | Shared | Per-pod PVC |\n| Scaling | Parallel | Sequential |\n| Use case | Stateless apps | Stateful apps |",
+          "codeExamples": [
+            {
+              "title": "StatefulSet for Database",
+              "language": "yaml",
+              "code": "apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: postgres\nspec:\n  serviceName: postgres\n  replicas: 3\n  selector:\n    matchLabels:\n      app: postgres\n  template:\n    metadata:\n      labels:\n        app: postgres\n    spec:\n      containers:\n        - name: postgres\n          image: postgres:15\n          ports:\n            - containerPort: 5432\n          env:\n            - name: POSTGRES_PASSWORD\n              valueFrom:\n                secretKeyRef:\n                  name: postgres-secret\n                  key: password\n          volumeMounts:\n            - name: data\n              mountPath: /var/lib/postgresql/data\n  volumeClaimTemplates:\n    - metadata:\n        name: data\n      spec:\n        accessModes: [\"ReadWriteOnce\"]\n        resources:\n          requests:\n            storage: 10Gi"
+            }
+          ]
+        },
+        {
+          "id": "rbac",
+          "title": "RBAC Security",
+          "summary": "Role-Based Access Control for fine-grained authorization in Kubernetes.",
+          "content": "## Role-Based Access Control (RBAC)\n\nRBAC regulates access to Kubernetes resources based on the roles of individual users or service accounts.\n\n### Key Concepts\n\n**Role / ClusterRole:**\n- Define what actions (verbs) can be performed on which resources\n- Role: namespace-scoped\n- ClusterRole: cluster-wide\n\n**RoleBinding / ClusterRoleBinding:**\n- Bind roles to users, groups, or service accounts\n- RoleBinding: grants permissions within a namespace\n- ClusterRoleBinding: grants permissions cluster-wide\n\n### Verbs (Actions)\n\n- `get`, `list`, `watch` - Read operations\n- `create`, `update`, `patch` - Write operations\n- `delete` - Remove resources\n- `*` - All actions\n\n### Best Practices\n\n- Follow principle of least privilege\n- Use namespaced Roles when possible\n- Audit RBAC permissions regularly\n- Use groups instead of individual users\n- Avoid wildcard permissions in production",
+          "codeExamples": [
+            {
+              "title": "RBAC Configuration",
+              "language": "yaml",
+              "code": "# Role for developer access\napiVersion: rbac.authorization.k8s.io/v1\nkind: Role\nmetadata:\n  name: developer\n  namespace: development\nrules:\n  - apiGroups: [\"\"]\n    resources: [\"pods\", \"services\", \"configmaps\"]\n    verbs: [\"get\", \"list\", \"watch\", \"create\", \"update\", \"delete\"]\n  - apiGroups: [\"apps\"]\n    resources: [\"deployments\"]\n    verbs: [\"get\", \"list\", \"watch\", \"create\", \"update\"]\n  - apiGroups: [\"\"]\n    resources: [\"secrets\"]\n    verbs: [\"get\", \"list\"]  # Read-only for secrets\n---\n# RoleBinding\napiVersion: rbac.authorization.k8s.io/v1\nkind: RoleBinding\nmetadata:\n  name: developer-binding\n  namespace: development\nsubjects:\n  - kind: User\n    name: jane@example.com\n    apiGroup: rbac.authorization.k8s.io\n  - kind: ServiceAccount\n    name: ci-pipeline\n    namespace: development\nroleRef:\n  kind: Role\n  name: developer\n  apiGroup: rbac.authorization.k8s.io"
+            }
+          ]
+        },
+        {
+          "id": "helm",
+          "title": "Helm Package Manager",
+          "summary": "The package manager for Kubernetes - template, share, and manage applications.",
+          "content": "## Helm - Kubernetes Package Manager\n\nHelm is the package manager for Kubernetes, helping you define, install, and upgrade complex Kubernetes applications.\n\n### Key Concepts\n\n**Chart:**\nA Helm package containing all resource definitions needed to run an application.\n\n**Release:**\nAn instance of a chart running in a cluster.\n\n**Repository:**\nA place where charts can be stored and shared.\n\n### Why Helm?\n\n- **Templating:** Parameterize your manifests\n- **Packaging:** Bundle related resources together\n- **Versioning:** Track and rollback releases\n- **Sharing:** Publish and consume community charts\n- **Dependencies:** Manage chart dependencies\n\n### Chart Structure\n\n```\nmychart/\n  Chart.yaml        # Chart metadata\n  values.yaml       # Default configuration\n  templates/        # Kubernetes manifests\n    deployment.yaml\n    service.yaml\n    _helpers.tpl    # Template helpers\n```\n\n### Common Commands\n\n```bash\n# Add repository\nhelm repo add bitnami https://charts.bitnami.com/bitnami\n\n# Search charts\nhelm search repo nginx\n\n# Install chart\nhelm install my-release bitnami/nginx\n\n# Upgrade release\nhelm upgrade my-release bitnami/nginx\n\n# Rollback\nhelm rollback my-release 1\n```",
+          "codeExamples": [
+            {
+              "title": "Helm Values Override",
+              "language": "yaml",
+              "code": "# values-production.yaml\nreplicaCount: 3\n\nimage:\n  repository: my-app\n  tag: v1.2.0\n  pullPolicy: Always\n\nresources:\n  requests:\n    memory: \"256Mi\"\n    cpu: \"250m\"\n  limits:\n    memory: \"512Mi\"\n    cpu: \"500m\"\n\nservice:\n  type: LoadBalancer\n  port: 80\n\ningress:\n  enabled: true\n  hosts:\n    - host: myapp.example.com\n      paths:\n        - path: /\n          pathType: Prefix\n\nautoscaling:\n  enabled: true\n  minReplicas: 3\n  maxReplicas: 10\n  targetCPUUtilization: 70"
+            }
+          ]
+        },
+        {
+          "id": "monitoring",
+          "title": "Monitoring with Prometheus",
+          "summary": "Set up comprehensive monitoring and alerting for your Kubernetes cluster.",
+          "content": "## Monitoring with Prometheus and Grafana\n\nPrometheus is the de-facto standard for Kubernetes monitoring, collecting metrics and enabling alerting.\n\n### Architecture\n\n- **Prometheus Server:** Scrapes and stores metrics\n- **Alertmanager:** Handles alerts and notifications\n- **Grafana:** Visualization dashboards\n- **Node Exporter:** Host-level metrics\n- **kube-state-metrics:** Kubernetes object metrics\n\n### Key Metrics to Monitor\n\n**Cluster Level:**\n- Node CPU/memory utilization\n- Pod counts and status\n- API server latency\n- etcd health\n\n**Application Level:**\n- Request rate (RED method)\n- Error rate\n- Duration/latency\n- Saturation\n\n### Prometheus Stack (kube-prometheus-stack)\n\nThe easiest way to deploy full monitoring stack:\n\n```bash\nhelm repo add prometheus-community https://prometheus-community.github.io/helm-charts\nhelm install prometheus prometheus-community/kube-prometheus-stack\n```\n\nIncludes:\n- Prometheus Operator\n- Prometheus\n- Alertmanager\n- Grafana with pre-built dashboards\n- Node exporter\n- kube-state-metrics",
+          "codeExamples": [
+            {
+              "title": "ServiceMonitor for Custom App",
+              "language": "yaml",
+              "code": "apiVersion: monitoring.coreos.com/v1\nkind: ServiceMonitor\nmetadata:\n  name: my-app-monitor\n  labels:\n    release: prometheus\nspec:\n  selector:\n    matchLabels:\n      app: my-app\n  endpoints:\n    - port: metrics\n      interval: 30s\n      path: /metrics\n---\n# PrometheusRule for alerting\napiVersion: monitoring.coreos.com/v1\nkind: PrometheusRule\nmetadata:\n  name: my-app-alerts\nspec:\n  groups:\n    - name: my-app\n      rules:\n        - alert: HighErrorRate\n          expr: |\n            sum(rate(http_requests_total{status=~\"5..\",app=\"my-app\"}[5m])) /\n            sum(rate(http_requests_total{app=\"my-app\"}[5m])) > 0.05\n          for: 5m\n          labels:\n            severity: critical\n          annotations:\n            summary: \"High error rate detected\"\n            description: \"Error rate is {{ $value | humanizePercentage }}\""
+            }
+          ]
+        },
+        {
+          "id": "troubleshooting",
+          "title": "Troubleshooting Guide",
+          "summary": "Debug common Kubernetes issues with pods, services, and networking.",
+          "content": "## Troubleshooting and Debugging\n\nCommon issues and how to diagnose them in Kubernetes.\n\n### Pod Issues\n\n**ImagePullBackOff:**\n- Wrong image name or tag\n- Private registry without credentials\n- Network issues\n\n**CrashLoopBackOff:**\n- Application crashes on startup\n- Missing dependencies or config\n- Insufficient resources\n\n**Pending Pods:**\n- Insufficient cluster resources\n- Node selectors/affinity not satisfied\n- PVC not bound\n\n### Debugging Steps\n\n1. **Check pod status:** `kubectl get pods -o wide`\n2. **Describe pod:** `kubectl describe pod <name>`\n3. **View logs:** `kubectl logs <pod> -c <container>`\n4. **Previous logs:** `kubectl logs <pod> --previous`\n5. **Exec into pod:** `kubectl exec -it <pod> -- sh`\n\n### Service Issues\n\n- Verify selector matches pod labels\n- Check endpoints: `kubectl get endpoints <service>`\n- Test DNS: `kubectl run test --image=busybox --rm -it -- nslookup <service>`\n\n### Useful Commands\n\n```bash\n# Get events\nkubectl get events --sort-by='.lastTimestamp'\n\n# Check resource usage\nkubectl top pods\nkubectl top nodes\n\n# Debug networking\nkubectl run debug --image=nicolaka/netshoot -it --rm -- bash\n```",
+          "codeExamples": [
+            {
+              "title": "Debug Commands",
+              "language": "bash",
+              "code": "# Full pod diagnostics\nkubectl describe pod my-app-xyz\n\n# Stream logs\nkubectl logs -f deployment/my-app --all-containers\n\n# Check events in namespace\nkubectl get events -n production --sort-by='.lastTimestamp'\n\n# Interactive debugging\nkubectl debug my-app-xyz -it --image=busybox --target=app\n\n# Port forward for local testing\nkubectl port-forward svc/my-app 8080:80\n\n# Check DNS resolution\nkubectl run dnstest --image=busybox:1.28 --rm -it --restart=Never -- nslookup kubernetes.default\n\n# Network debugging\nkubectl run netshoot --image=nicolaka/netshoot -it --rm -- bash"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "docker",
+      "title": "Docker",
+      "icon": "🐳",
+      "sections": [
+        {
+          "id": "image-basics",
+          "title": "Image Composition",
+          "summary": "Slim down layers, pin digests, and leverage multi-stage builds.",
+          "content": "## Authoring Dockerfiles\nPrefer lightweight base images, copy only what you need, and pin versions for reproducibility.\n\n### Multi-Stage Builds\nUse intermediate stages for building binaries or assets, then copy the compiled output into a scratch or distroless stage.\n\n### Security Guardrails\n- Switch to non-root users.\n- Add `HEALTHCHECK` commands.\n- Scan images in CI.",
+          "codeExamples": [
+            {
+              "title": "Multi-stage Dockerfile",
+              "language": "dockerfile",
+              "code": "# build stage\nFROM node:22-alpine AS build\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci --only=production\nCOPY . .\nRUN npm run build\n\n# runtime stage\nFROM gcr.io/distroless/nodejs22-debian12\nWORKDIR /app\nCOPY --from=build /app/dist ./dist\nUSER nonroot\nCMD [\"node\", \"dist/server.js\"]"
+            }
+          ]
+        },
+        {
+          "id": "networking",
+          "title": "Networking & Compose",
+          "summary": "Connect services securely with Docker networks and Compose profiles.",
+          "content": "## Networks 101\nUser-defined bridge networks let containers discover each other by name while isolating traffic.\n\n### Compose Profiles\nSplit infrastructure and app services into profiles so `docker compose --profile prod up` only boots what you need.\n\n### Troubleshooting\nInspect `docker network ls`, then `docker network inspect` to verify CIDRs and peers.",
+          "codeExamples": [
+            {
+              "title": "docker-compose.yml",
+              "language": "yaml",
+              "code": "version: '3.9'\nservices:\n  api:\n    build: .\n    ports:\n      - '8080:8080'\n    profiles: ['app']\n    networks: ['edge']\n  redis:\n    image: redis:7-alpine\n    profiles: ['infra']\n    networks: ['edge']\nnetworks:\n  edge:\n    driver: bridge"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "microservices",
+      "title": "Microservices",
+      "icon": "⚙️",
+      "sections": [
+        {
+          "id": "api-design",
+          "title": "API Design",
+          "summary": "Design evolvable APIs, version contracts, and embrace schema governance.",
+          "content": "## Guiding Principles\n- Document contracts with OpenAPI.\n- Version breaking changes.\n- Keep payloads consistent and paginated.\n\n### Async Messaging\nAdopt event-driven patterns when workflows span multiple bounded contexts.\n\n### Reliability\nRate limit clients, add circuit breakers, and centralize tracing metadata.",
+          "codeExamples": [
+            {
+              "title": "Express Rate Limiter",
+              "language": "javascript",
+              "code": "import rateLimit from 'express-rate-limit'\n\nexport const limiter = rateLimit({\n  windowMs: 60 * 1000,\n  max: 120,\n  standardHeaders: true,\n  legacyHeaders: false,\n})\n\napp.use('/api', limiter)"
+            }
+          ]
+        },
+        {
+          "id": "observability",
+          "title": "Observability",
+          "summary": "Instrument traces, metrics, and logs from day one.",
+          "content": "## Golden Signals\nTrack latency, traffic, errors, and saturation across every service.\n\n### Distributed Tracing\nPropagate W3C trace-context headers and export spans to a collector.\n\n### Metrics Pipelines\nUse Prometheus remote write or OpenTelemetry to ship metrics to a long-term store.",
+          "codeExamples": [
+            {
+              "title": "OpenTelemetry Node SDK",
+              "language": "javascript",
+              "code": "import { NodeSDK } from '@opentelemetry/sdk-node'\nimport { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node'\nimport { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'\n\nconst sdk = new NodeSDK({\n  traceExporter: new OTLPTraceExporter({\n    url: 'https://otel-gateway.internal/v1/traces',\n  }),\n  instrumentations: [getNodeAutoInstrumentations()],\n})\n\nsdk.start()"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

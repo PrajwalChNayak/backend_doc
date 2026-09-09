@@ -1,0 +1,76 @@
+# Publishes the generated site in docs/ to GitHub Pages.
+#
+# docs/ is committed, so there is nothing to build here: the workflow uploads
+# the directory verbatim and deploys it. Content validation lives in docs.yml.
+#
+# Why this exists at all, rather than "Deploy from a branch":
+# branch publishing runs GitHub's pages-build-deployment workflow, which calls
+# actions/jekyll-build-pages. That action shells straight into `github-pages
+# build` with no .nojekyll check, so a hand-generated site gets a Jekyll pass it
+# never asked for — and this one dies in the theme's Sass:
+#
+#   github-pages 232 | Error: No such file or directory @ dir_chdir0 - /github/workspace/docs
+#
+# Deploying from Actions skips Jekyll entirely; the artifact is served as-is.
+# See "Publishing to GitHub Pages" in README.md for the one-time repo setting.
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    # Only the published output (and this workflow) can change the site.
+    # Use "Run workflow" in the Actions tab to force a redeploy.
+    paths:
+      - docs/**
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+
+# deploy-pages needs pages: write to publish and id-token: write to prove the
+# artifact came from this run.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one in flight — a half-finished
+# deploy would leave the live site on an unknown revision.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy docs/ to Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # actions/checkout v7.0.1 was the current major on 2026-09-09.
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      # Reads the Pages configuration for this repository. Required before the
+      # upload so the artifact is tagged for the right site.
+      # actions/configure-pages v6.0.0 was the current major on 2026-09-09.
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      # include-hidden-files keeps docs/.nojekyll in the tarball. Nothing here
+      # runs Jekyll, but the file is part of the generated output and the
+      # staleness check in docs.yml expects it to exist.
+      # actions/upload-pages-artifact v5.0.0 was the current major on 2026-09-09.
+      - name: Upload docs/ as the Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs
+          include-hidden-files: true
+
+      # actions/deploy-pages v5.0.1 was the current major on 2026-09-09.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

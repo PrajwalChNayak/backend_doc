@@ -533,6 +533,29 @@ button {
   transform: rotate(180deg);
 }
 
+/* The platform switcher sits at the head of the bar and reads as a label
+   rather than another section, so it does not compete with them. */
+.topnav__item--group {
+  margin-right: var(--sp-2);
+  padding-right: var(--sp-2);
+  border-right: 1px solid var(--c-border);
+}
+
+.topnav__trigger--group {
+  color: var(--c-text);
+  font-weight: 650;
+}
+
+.topnav__trigger--group:hover,
+.topnav__trigger--group[aria-expanded='true'] {
+  background: var(--c-accent-soft);
+  color: var(--c-accent-text);
+}
+
+.topnav__overview[aria-current='true'] {
+  background: var(--c-accent-soft);
+}
+
 .topnav__panel {
   position: absolute;
   top: calc(100% + 5px);
@@ -662,6 +685,19 @@ button {
   max-width: 40rem;
   margin: 0 auto;
   padding: var(--sp-4) var(--sp-5) var(--sp-7);
+}
+
+.mobilenav__platform + .mobilenav__platform {
+  margin-top: var(--sp-5);
+}
+
+.mobilenav__platform-label {
+  margin: 0 0 var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 2px solid var(--c-accent);
+  font-size: var(--fs-ui);
+  font-weight: 700;
+  color: var(--c-text);
 }
 
 .mobilenav__group + .mobilenav__group {
@@ -1628,6 +1664,34 @@ h4:hover .anchor,
   font-size: var(--fs-ui);
   font-weight: 620;
   text-decoration: none;
+}
+
+.home-group + .home-group {
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--c-border);
+}
+
+.home-group__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  font-size: 1.0625rem;
+  font-weight: 680;
+  letter-spacing: -0.015em;
+}
+
+.home-group__count {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-text-subtle);
+  letter-spacing: 0;
+}
+
+.home-group__desc {
+  margin: 0.15rem 0 var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--c-text-muted);
 }
 
 .home-index {

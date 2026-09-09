@@ -114,14 +114,26 @@ git push
 Then, once per repository:
 
 1. **Settings → Pages**
-2. **Source:** `Deploy from a branch`
-3. **Branch:** `main`, **Folder:** `/docs`
-4. **Save**
+2. **Source:** `GitHub Actions`
 
-Two details make this work:
+`.github/workflows/pages.yml` does the rest: every push to `main` that touches `docs/`
+uploads the directory verbatim and deploys it. Nothing is compiled, and no Jekyll runs.
+Use **Run workflow** on the Actions tab to force a redeploy.
 
-- `docs/.nojekyll` is written by `scripts/build.mjs` on every build, so Jekyll does not strip files and directories it would otherwise ignore.
+Do **not** choose `Deploy from a branch`. That mode hands the folder to GitHub's own
+`pages-build-deployment`, which calls `actions/jekyll-build-pages` — and that action shells
+straight into `github-pages build` without ever checking for `.nojekyll`. A site that is
+already HTML gets a Jekyll pass it never asked for, and this one dies inside the default
+theme's Sass:
+
+```text
+github-pages 232 | Error: No such file or directory @ dir_chdir0 - /github/workspace/docs
+```
+
+Two details make the published site work:
+
 - Every link the generator emits is **relative**, so the site works unchanged from a project subpath such as `https://<user>.github.io/<repo>/` as well as from a domain root.
+- `docs/.nojekyll` is written by `scripts/build.mjs` on every build and is included in the uploaded artifact. Deploying from Actions never invokes Jekyll, so the file changes nothing there — it is insurance for anyone who serves `docs/` through a system that does.
 
 The workflow in `.github/workflows/docs.yml` fails a pull request whose `docs/` output is stale, so the published site cannot silently lag `content/`.
 

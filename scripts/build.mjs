@@ -16,7 +16,7 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { site, sections, flatten } from './nav.mjs'
+import { site, groups, sections, flatten } from './nav.mjs'
 import { parseFrontMatter, renderMarkdown, escapeHtml, escapeAttr, inlineToText } from './lib/markdown.mjs'
 import { renderPage, renderNavigation, renderBreadcrumbs, renderPager, statusPill } from './lib/template.mjs'
 
@@ -126,7 +126,7 @@ async function build() {
   const navFor = (base, activePath, activeSectionId) => {
     const key = `${base}::${activePath}`
     if (!navCache.has(key)) {
-      navCache.set(key, renderNavigation({ sections, base, activePath, activeSectionId, statusByPath }))
+      navCache.set(key, renderNavigation({ groups, sections, base, activePath, activeSectionId, statusByPath }))
     }
     return navCache.get(key)
   }
@@ -242,22 +242,38 @@ async function build() {
   const first = order[0]
 
   // A documentation index, not a landing page: every section with every page
-  // listed, so the home page is the fastest route to any topic.
-  const index = sections
-    .map((s) => {
-      const links = s.pages
-        .filter((p) => statusByPath.has(`${s.id}/${p.slug}`))
-        .map(
-          (p) =>
-            `<li><a href="${escapeAttr(`${s.id}/${p.slug}.html`)}">${escapeHtml(p.title)}</a></li>`
-        )
+  // listed, grouped by platform, so the home page is the fastest route to any
+  // topic on the site.
+  const index = groups
+    .map((g) => {
+      const inGroup = sections.filter((s) => (s.group || groups[0].id) === g.id)
+      if (!inGroup.length) return ''
+      const cards = inGroup
+        .map((s) => {
+          const links = s.pages
+            .filter((p) => statusByPath.has(`${s.id}/${p.slug}`))
+            .map(
+              (p) => `<li><a href="${escapeAttr(`${s.id}/${p.slug}.html`)}">${escapeHtml(p.title)}</a></li>`
+            )
+            .join('')
+          return (
+            '<section class="home-section">' +
+            `<a class="home-section__title" href="${escapeAttr(s.id + '/index.html')}">${escapeHtml(s.title)}` +
+            `<span class="home-section__count">${s.pages.length}</span></a>` +
+            `<p class="home-section__desc">${escapeHtml(s.summary)}</p>` +
+            `<ul class="home-section__pages">${links}</ul>` +
+            '</section>'
+          )
+        })
         .join('')
+      const pageCount = inGroup.reduce((n, s) => n + s.pages.length, 0)
       return (
-        '<section class="home-section">' +
-        `<a class="home-section__title" href="${escapeAttr(s.id + '/index.html')}">${escapeHtml(s.title)}` +
-        `<span class="home-section__count">${s.pages.length}</span></a>` +
-        `<p class="home-section__desc">${escapeHtml(s.summary)}</p>` +
-        `<ul class="home-section__pages">${links}</ul>` +
+        '<section class="home-group">' +
+        '<h2 class="home-group__title">' +
+        escapeHtml(g.label) +
+        `<span class="home-group__count">${inGroup.length} sections · ${pageCount} pages</span></h2>` +
+        `<p class="home-group__desc">${escapeHtml(g.summary)}</p>` +
+        `<div class="home-index">${cards}</div>` +
         '</section>'
       )
     })
@@ -273,7 +289,7 @@ async function build() {
     `<span>Verified ${escapeHtml(site.verified)}</span>` +
     (first ? `<a class="home-start" href="${escapeAttr(first.path + '.html')}">Start reading →</a>` : '') +
     '</p></header>' +
-    `<div class="home-index">${index}</div>` +
+    index +
     '</div>'
 
   await writeFile(

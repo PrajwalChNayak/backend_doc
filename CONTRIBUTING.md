@@ -527,3 +527,235 @@ to SQLite so `node scripts/run-examples.mjs` can execute them unattended.
 `nav.mjs`, and a **missing file** for any `nav.mjs` entry with no Markdown file.
 
 Filenames are **kebab-case**, one topic per file.
+
+---
+
+# Part 2 — NestJS
+
+Everything above still applies. This part adds the facts and rules specific to the
+NestJS sections.
+
+Fact-verification pass for this part: **2026-09-09**, against the live npm
+registry and the published type declarations inside `@nestjs/common@12.0.1` and
+`@nestjs/core@12.0.1` (unpacked and read directly — not from memory, and not from
+docs alone).
+
+## 11. Verified NestJS facts
+
+### 11.1 Versions (npm `dist-tags`, verified 2026-09-09)
+
+| Package | Version | Notes |
+| --- | --- | --- |
+| `@nestjs/core` | **12.0.1** | `engines.node: ">= 20"`, `"type": "module"` |
+| `@nestjs/common` | **12.0.1** | `"type": "module"` |
+| `@nestjs/platform-express` | **12.0.1** | bundles the versions below |
+| `@nestjs/platform-fastify` | 12.0.1 | |
+| `@nestjs/testing` | 12.0.1 | |
+| `@nestjs/cli` | **12.0.0** | `engines.node: ">= 20.11"` |
+| `@nestjs/schematics` | **12.0.0** | `engines.node: ">=22.12.0"` — this is why the CLI needs a newer Node than the app |
+| `@nestjs/config` | 12.0.0 | depends on `@standard-schema/spec` 1.1.0 and `dotenv` 17.4.2 |
+| `@nestjs/jwt` | 12.0.1 | |
+| `@nestjs/passport` | 12.0.0 | |
+| `@nestjs/swagger` | 12.0.1 | engines `^20.19.0 || >=22.12.0` |
+| `@nestjs/terminus` | 12.0.0 | engines `^20.19.0 || ^22.12.0 || >=24.0.0` |
+| `@nestjs/typeorm` | 12.0.1 | engines `>=20.19.0` |
+| `@nestjs/mongoose` | 12.0.0 | |
+| `@nestjs/bullmq` | 12.0.0 | |
+| `@nestjs/schedule` | 12.0.1 | |
+| `@nestjs/cache-manager` | 12.0.0 | |
+| `@nestjs/event-emitter` | 12.0.0 | |
+| `@nestjs/microservices` | 12.0.1 | |
+| `@nestjs/cqrs` | 12.0.0 | |
+| `@nestjs/websockets` | 12.0.1 | |
+| `@nestjs/platform-socket.io` | 12.0.1 | |
+| `@nestjs/mapped-types` | 12.0.0 | |
+| `@nestjs/axios` | 12.0.0 | |
+| `@nestjs/serve-static` | 12.0.0 | |
+| `@nestjs/devtools-integration` | 12.0.0 | |
+
+:::warning Four corrections to the original brief
+These packages are **not** on the 12.x line. Writing `@nestjs/throttler@12` or
+`@nestjs/graphql@12` would be wrong.
+
+| Package | Actual current version |
+| --- | --- |
+| `@nestjs/throttler` | **6.5.0** (published 2025-12-02) |
+| `@nestjs/graphql` | **14.0.0** |
+| `@nestjs/apollo` | **14.0.0** |
+| `@nestjs/observe` | **0.1.8** — pre-1.0. Describe it as new and unstable. |
+:::
+
+**`@nestjs/platform-express@12.0.1` bundles exactly these** — read from its own
+`dependencies` field, not assumed:
+
+```json
+{ "cors": "2.8.6", "express": "5.2.1", "multer": "2.2.0",
+  "path-to-regexp": "8.4.2", "tslib": "2.8.1" }
+```
+
+Note `multer` is **2.2.0** here, not the 2.3.0 documented in the Express
+section — that is the version Nest pins, and it is still a 2.x release. multer
+**1.x** is end of life and npm-deprecated; never present it as an option.
+
+**Supporting packages**, verified the same day: `class-validator` 0.15.1,
+`class-transformer` 0.5.1, `reflect-metadata` 0.2.2, `rxjs` 7.8.2, `zod` 4.5.4,
+`valibot` 1.4.2, `arktype` 2.2.3, `@standard-schema/spec` 1.1.0, `typeorm` 1.1.1,
+`@prisma/client` 7.10.0, `mongoose` 9.9.5, `drizzle-orm` 0.45.2, `pg` 8.23.0,
+`mysql2` 3.24.4, `better-sqlite3` 13.0.3, `ioredis` 6.0.0, `helmet` 8.3.0,
+`argon2` 0.45.1, `bcrypt` 6.0.0, `passport` 0.7.0, `passport-jwt` 4.0.1,
+`joi` 18.2.8, `bullmq` 6.3.4, `cache-manager` 7.2.9, `@keyv/redis` 5.1.6,
+`pino` 10.3.1, `nestjs-pino` 5.1.0, `supertest` 7.2.2, `vitest` 5.0.0,
+`oxlint` 1.82.0, `typescript` 7.0.2, `@nats-io/transport-node` 3.4.0,
+`graphql` 17.0.2, `graphql-ws` 6.2.1, `@apollo/server` 5.5.1, `socket.io` 4.8.3,
+`@casl/ability` 7.0.1, `file-type` 22.0.2, `@aws-sdk/client-s3` 3.1128.0.
+
+**Prisma anomaly, unchanged from Part 1:** the npm `latest` tag for `prisma` is
+`8.0.0-rc.13`, a release candidate. The latest **stable** is `7.10.0`, and
+`@prisma/client` is `7.10.0`. Document 7.10.0 and pin `prisma@7`.
+
+**npm-deprecated — each confirmed by its registry deprecation notice:**
+
+| Package | Notice |
+| --- | --- |
+| `nats` (2.29.3) | "Package moved. Use @nats-io/transport-node" |
+| `subscriptions-transport-ws` (0.11.0) | "no longer maintained" |
+| `casl` (unscoped) | split into packages — use `@casl/ability` |
+| `multer` 1.x | vulnerabilities patched in 2.x |
+
+### 11.2 Node.js requirements
+
+| To do this | Needs Node |
+| --- | --- |
+| **Run** a Nest 12 app | v20.19+, v22.12+, or v26+ (`@nestjs/core` declares `>= 20`) |
+| Use the **CLI** (`nest new`, `nest generate`, `nest upgrade`) | **v22.22.3+, v24.15+, or v26+** — `@nestjs/schematics@12` declares `>=22.12.0` because of the Angular devkit underneath |
+
+This handbook targets **Node 24 LTS**, which satisfies both. Mention the CLI
+floor on any page where it could surprise someone.
+
+### 11.3 NestJS 12 runs on Express 5
+
+`@nestjs/platform-express@12` bundles `express@5.2.1` and `path-to-regexp@8.4.2`.
+**Every Express 5 breaking change documented in Part 1 applies to Nest route
+paths and middleware.** Do not re-explain them — cross-link
+`../express/route-parameters-and-path-syntax.md` and show the decorator form:
+
+| Express 4 form (invalid in Nest 12) | Nest 12 |
+| --- | --- |
+| `@Get('*')` | `@Get('*splat')` or `@Get('{*splat}')` |
+| `@Get(':file.:ext?')` | `@Get(':file{.:ext}')` |
+| inline regex in the path string | an array of paths, or a param constraint |
+| `()[]?+!` unescaped | escape with a backslash |
+
+### 11.4 NestJS 12 breaking and notable changes
+
+Every item below was confirmed against the published `.d.ts` files.
+
+**ESM.** All core packages ship as ES modules — `"type": "module"` in both
+`@nestjs/core` and `@nestjs/common`, and their internal imports carry `.js`
+extensions. CommonJS apps still consume them through `require(esm)` and need no
+rewrite. `nest upgrade` preserves the existing module format.
+
+Opting into ESM: `"type": "module"` in package.json; tsconfig
+`module: "nodenext"`, `moduleResolution: "nodenext"`,
+`resolvePackageJsonExports: true`; `.js` extensions on relative imports;
+`import.meta.dirname` instead of `__dirname`.
+
+**Standard Schema support.** Verified signatures:
+
+```ts
+// StandardSchemaValidationPipeOptions
+{ transform?: boolean                    // default true
+  validateCustomDecorators?: boolean     // default false
+  validateOptions?: Record<string, unknown>
+  errorHttpStatusCode?: ErrorHttpStatusCode   // default 400
+  exceptionFactory?: (issues: readonly StandardSchemaV1.Issue[]) => any }
+
+// @SerializeOptions({ schema, validateOptions })
+// new StandardSchemaSerializerInterceptor(reflector, { schema?, validateOptions? })
+```
+
+Works with any Standard Schema library — Zod, Valibot, ArkType.
+
+**`@nestjs/config`** `validationSchema` accepts any Standard Schema. With Joi
+v18+, library-specific settings move under `validationOptions.libraryOptions`.
+
+**Lifecycle hook ordering** now runs by component hierarchy level, so
+`onModuleInit`, `onApplicationBootstrap` and shutdown hooks can fire in a
+different order than v11 across dependent providers.
+
+**Route conflict diagnostics**, opt-in. Verified types:
+
+```ts
+type RouteConflictPolicyLevel = 'off' | 'warn' | 'error'      // each kind defaults to 'off'
+interface RouteConflictPolicy { duplicate?: RouteConflictPolicyLevel; shadow?: RouteConflictPolicyLevel }
+type RouteResolutionStrategy = 'declaration' | 'specificity'  // defaults to 'declaration'
+```
+
+`duplicate` is an identical (method, path, host, version) registration. `shadow`
+is two patterns that can match the same request, such as `/users/me` and
+`/users/:id`.
+
+**`errorCode`** is a real field on `HttpExceptionOptions` and on `HttpException`:
+
+```ts
+throw new BadRequestException('Password is too weak', { errorCode: 'WEAK_PASSWORD' })
+```
+
+**`ConsoleLogger`** treats a trailing plain object as structured params;
+`structuredParams` defaults to **`true`**. There is also `flattenParams`
+(default `false`), which spreads params into the root JSON object in `json` mode
+instead of nesting them under `params`.
+
+**Microservices NATS v3:** uninstall `nats`, install
+`@nats-io/transport-node` 3.4.0. Custom deserializers receive full NATS message
+objects — read the payload with `msg.json()`.
+
+**GraphQL:** GraphiQL is the default IDE (`graphiql: { … }`), and
+`subscriptions-transport-ws` is replaced by `graphql-ws`
+(`subscriptions: { 'graphql-ws': true }`).
+
+**`@nestjs/observe`** is the new observability SDK, opt-in through the
+`instrument` application option, which lives on
+`NestApplicationContextOptions`. It is version **0.1.8** — say that it is new
+and pre-1.0.
+
+**CLI:** new `nest deploy`; `nest build` and `nest start` gain `--rspackPath`,
+`--emit-declarations`, `--no-type-check`, `--silent` and
+`--parallel [concurrency]`; `nest-cli.json` gains `includeLibraryAssets`.
+New ESM projects default to Vitest and generated projects default to oxlint;
+existing CommonJS apps are unaffected.
+
+## 12. NestJS authoring rules
+
+1. **Document NestJS 12 on Express 5 as current.** NestJS 11-and-earlier idioms
+   appear **only** in `content/nestjs-reference/`, inside a `:::legacy` or
+   `:::deprecated` callout.
+2. **Never invent a decorator, provider, option or package.** Verify against
+   docs.nestjs.com or the package's own `.d.ts`. Anything you cannot verify goes
+   in `docs-notes/unverified-<section>.md` and is left out of the page.
+3. **TypeScript is the default language** on NestJS pages — use `ts` fences.
+   `scripts/lint-snippets.mjs` type-strips and parses every one.
+4. **Decorators.** Nest uses TypeScript legacy decorators, which Node's
+   type-stripping cannot execute. That is fine here because blocks are parsed
+   rather than run, and the checker reports decorator blocks separately — but it
+   does mean a Nest example needs a real build step, so every example ships a
+   `tsconfig.json`.
+5. `scripts/check.mjs` additionally fails the build on these outside
+   `content/nestjs-reference/`:
+   - `from 'nats'` or `require('nats')` — the moved package
+   - `subscriptions-transport-ws`
+   - `@Get('*')`, `@Get(':a.:b?')` and the other Express 4 path forms in a Nest
+     route decorator
+   - a Joi `validationOptions` that is not nested under `libraryOptions`
+6. **Cross-link, do not duplicate.** The Node, Express, security and database
+   material from Part 1 is still correct and still applies. A NestJS page should
+   link to it and cover only what Nest changes.
+
+## 13. Section ids and groups
+
+`scripts/nav.mjs` now carries a `group` on every section: `core` for the
+Node and Express sections from Part 1, `nestjs` for these. The top navigation
+shows the sections of the current group plus a switcher to the other, which is
+what keeps the bar readable with twenty-one sections.
+
+**Do not reorder or rename the existing `core` sections.**

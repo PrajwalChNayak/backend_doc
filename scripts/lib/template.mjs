@@ -68,8 +68,42 @@ function pageLinks(section, base, activePath, statusByPath, linkClass) {
  *
  * @returns {{ topnav: string, mobile: string }}
  */
-export function renderNavigation({ sections, base, activePath, activeSectionId, statusByPath }) {
-  const items = sections
+export function renderNavigation({ groups, sections, base, activePath, activeSectionId, statusByPath }) {
+  const activeGroupId =
+    (sections.find((s) => s.id === activeSectionId) || {}).group || groups[0].id
+  const barSections = sections.filter((s) => (s.group || groups[0].id) === activeGroupId)
+  const activeGroup = groups.find((g) => g.id === activeGroupId) || groups[0]
+
+  // Twenty-one sections will not fit one bar. The bar therefore shows the
+  // sections of the platform you are reading, preceded by a switcher to the
+  // others. It is a plain dropdown built from the same markup as a section
+  // menu, so the existing keyboard and click handling covers it for free.
+  const switcher =
+    groups.length < 2
+      ? ''
+      : '<li class="topnav__item topnav__item--group">' +
+        '<button class="topnav__trigger topnav__trigger--group" type="button" id="navtrigger-group" ' +
+        'aria-expanded="false" aria-controls="navpanel-group" aria-haspopup="true">' +
+        escapeHtml(activeGroup.label) +
+        ICONS.chevron +
+        '</button>' +
+        '<div class="topnav__panel" id="navpanel-group" role="group" aria-labelledby="navtrigger-group" hidden>' +
+        groups
+          .map((g) => {
+            const first = sections.find((s) => (s.group || groups[0].id) === g.id)
+            if (!first) return ''
+            const href = `${base}${first.id}/index.html`
+            const current = g.id === activeGroupId
+            return (
+              `<a class="topnav__overview" href="${escapeAttr(href)}"${current ? ' aria-current="true"' : ''}>` +
+              `<span class="topnav__overview-title">${escapeHtml(g.label)}</span>` +
+              `<span class="topnav__overview-desc">${escapeHtml(g.summary)}</span></a>`
+            )
+          })
+          .join('') +
+        '</div></li>'
+
+  const items = barSections
     .map((section, i) => {
       const isActive = section.id === activeSectionId
       const panelId = `navpanel-${section.id}`
@@ -94,17 +128,29 @@ export function renderNavigation({ sections, base, activePath, activeSectionId, 
 
   const topnav =
     '<nav class="topnav" aria-label="Documentation sections">' +
-    `<ul class="topnav__list">${items}</ul>` +
+    `<ul class="topnav__list">${switcher}${items}</ul>` +
     '</nav>'
 
-  const mobileGroups = sections
-    .map((section) => {
-      const isActive = section.id === activeSectionId
+  // The mobile panel is not width-constrained, so it lists every group in full
+  // rather than hiding the platform you are not currently reading.
+  const mobileGroups = groups
+    .map((g) => {
+      const inGroup = sections.filter((s) => (s.group || groups[0].id) === g.id)
+      if (!inGroup.length) return ''
+      const body = inGroup
+        .map((section) => {
+          const isActive = section.id === activeSectionId
+          return (
+            `<section class="mobilenav__group"${isActive ? ' data-active="true"' : ''}>` +
+            `<a class="mobilenav__title" href="${escapeAttr(`${base}${section.id}/index.html`)}">${escapeHtml(section.title)}</a>` +
+            `<ul class="mobilenav__pages">${pageLinks(section, base, activePath, statusByPath, 'mobilenav__page')}</ul>` +
+            '</section>'
+          )
+        })
+        .join('')
       return (
-        `<section class="mobilenav__group"${isActive ? ' data-active="true"' : ''}>` +
-        `<a class="mobilenav__title" href="${escapeAttr(`${base}${section.id}/index.html`)}">${escapeHtml(section.title)}</a>` +
-        `<ul class="mobilenav__pages">${pageLinks(section, base, activePath, statusByPath, 'mobilenav__page')}</ul>` +
-        '</section>'
+        `<div class="mobilenav__platform"${g.id === activeGroupId ? ' data-active="true"' : ''}>` +
+        `<p class="mobilenav__platform-label">${escapeHtml(g.label)}</p>${body}</div>`
       )
     })
     .join('')

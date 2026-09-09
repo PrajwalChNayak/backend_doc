@@ -85,6 +85,43 @@ const EXPRESS4_PATTERNS = [
 const DEPRECATION_LANGUAGE =
   /\b(deprecat\w*|removed|remove it|unnecessary|no longer|archived|unmaintained|obsolete|dead|delete it|drop it|dropped|do not use|don't use|never use|instead of|replaced?|superseded|stop using|end of life|EOL|was removed|bundled with)\b/i
 
+/**
+ * NestJS 11-and-earlier idioms. Same rule as the Express 4 list: banned inside a
+ * code fence outside `content/nestjs-reference/`, allowed in prose that is
+ * warning about them.
+ */
+const NESTJS_LEGACY_PATTERNS = [
+  { needle: "from 'nats'", label: "the `nats` package moved — use @nats-io/transport-node" },
+  { needle: 'from "nats"', label: 'the `nats` package moved — use @nats-io/transport-node' },
+  { needle: "require('nats')", label: 'the `nats` package moved — use @nats-io/transport-node' },
+  { needle: 'subscriptions-transport-ws', label: 'replaced by graphql-ws in Nest 12' },
+]
+
+/**
+ * Express 4 path syntax written inside a Nest route decorator. Nest 12 runs on
+ * path-to-regexp 8, so these throw at bootstrap.
+ */
+const BAD_NEST_ROUTE_PATTERNS = [
+  {
+    re: /@(?:Get|Post|Put|Patch|Delete|All|Options|Head|Search)\(\s*(['"`])\*\1/,
+    label: "@Get('*') is invalid in Nest 12 — use '*splat' or '{*splat}'",
+  },
+  {
+    re: /@(?:Get|Post|Put|Patch|Delete|All|Options|Head|Search)\(\s*(['"`])[^'"`]*:\w+\?/,
+    label: "an optional ':param?' is invalid in Nest 12 — use '{:param}' braces",
+  },
+  {
+    re: /@(?:Controller|Get|Post|Put|Patch|Delete|All)\(\s*(['"`])[^'"`]*\[[^\]]*\|/,
+    label: 'regex-in-string paths are invalid in Nest 12 — pass an array of paths',
+  },
+]
+
+/**
+ * Joi v18+ moved library-specific settings under `validationOptions.libraryOptions`.
+ * A `validationOptions` object holding Joi keys directly is the v11 form.
+ */
+const JOI_LEGACY_OPTION_KEYS = ['allowUnknown', 'abortEarly', 'stripUnknown', 'convert']
+
 /** Invalid Express 5 route patterns written as a real call. */
 const BAD_ROUTE_PATTERNS = [
   { re: /\b(?:app|router)\.(?:get|post|put|patch|delete|all|use)\(\s*(['"`])\/\*\1/, label: "'/*' is invalid in Express 5 — use '/*splat' or '/{*splat}'" },
@@ -333,6 +370,16 @@ async function main() {
         }
         for (const { re, label } of BAD_ROUTE_PATTERNS) {
           if (re.test(lines[i])) err(`${rel}:${i + 1 + lineOffset}`, `invalid Express 5 route pattern: ${label}`)
+        }
+
+        // --- NestJS-specific rules -------------------------------------
+        for (const { needle, label } of NESTJS_LEGACY_PATTERNS) {
+          if (lines[i].includes(needle) && !isProseWarning) {
+            err(`${rel}:${i + 1 + lineOffset}`, `NestJS 11 idiom outside the migration section: ${label}`)
+          }
+        }
+        for (const { re, label } of BAD_NEST_ROUTE_PATTERNS) {
+          if (re.test(lines[i])) err(`${rel}:${i + 1 + lineOffset}`, `invalid Nest 12 route pattern: ${label}`)
         }
       }
     }

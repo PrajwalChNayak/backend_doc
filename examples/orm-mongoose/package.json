@@ -1,0 +1,19 @@
+{
+  "name": "orm-mongoose",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mongoose 9 from Express 5: schemas, populate, a multi-document transaction, and the operator-injection defence that replaces SQL escaping in MongoDB.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node src/seed.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.9.5",
+    "zod": "^4.5.4"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "port": 3001,
+  "entry": "src/server.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/notes", "expect": 200 },
+    { "method": "POST", "path": "/notes", "body": { "title": "smoke", "body": "written by run-examples.mjs" }, "expect": [200, 201] },
+    { "method": "GET", "path": "/notes/does-not-exist", "expect": [400, 404] },
+    { "method": "GET", "path": "/boom", "expect": 500 },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}

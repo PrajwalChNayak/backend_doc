@@ -1,0 +1,143 @@
+# Validates the Node.js & Express handbook: the generated site under docs/ and
+# the runnable apps under examples/.
+#
+# The whole toolchain in scripts/ is zero-dependency Node ESM, so the validate
+# job needs nothing but checkout + setup-node — no npm install at all.
+#
+# Prose companion: content/production/ci.md.
+
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Six pushes to one PR should not occupy six runners.
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+# Nothing here writes to the repository; keep the token read-only.
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Static validation. Fast, hermetic (except check-deps.mjs, which reaches the
+  # npm registry), and the gate that keeps docs/ honest.
+  # ---------------------------------------------------------------------------
+  validate:
+    name: Validate docs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # actions/checkout v7.0.1 was the current major on 2026-09-09.
+      # Re-check github.com/actions/checkout before bumping.
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      # This repository has no .nvmrc, so the version is pinned here instead.
+      # 24 is the Active LTS line the handbook targets (verified 2026-09-08).
+      # actions/setup-node v7.0.0 was the current major on 2026-09-09.
+      - name: Set up Node 24
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # Generate docs/ from content/. Runs first because the staleness check
+      # below compares the freshly built output against what is committed, and
+      # because a build failure is the clearest possible signal.
+      - name: Build the site (content/ -> docs/)
+        run: node scripts/build.mjs
+
+      # docs/ is committed so GitHub Pages can serve it with no build step.
+      # If building changed anything, someone edited content/ without
+      # rebuilding and the published site would silently lag the source.
+      - name: Fail if committed docs/ is stale
+        run: |
+          if ! git diff --exit-code -- docs/; then
+            echo "::error::docs/ is out of date. Run 'node scripts/build.mjs' and commit the result."
+            exit 1
+          fi
+
+      # Structure: front matter, nav.mjs title match, required headings,
+      # dangling links and anchors, orphan pages, fences with no language,
+      # and Express 4 APIs outside a :::legacy / :::deprecated callout.
+      - name: Structural check
+        run: node scripts/check.mjs
+
+      # The highest-value check in the repository: fails on SQL built by string
+      # concatenation or interpolation anywhere in content/ or examples/,
+      # unless it is explicitly marked as a vulnerable demonstration.
+      - name: SQL-injection lint
+        run: node scripts/lint-sql.mjs
+
+      # Every fenced JS/TS block must parse as an ES module, so a reader can
+      # paste and run it. Nothing is executed.
+      - name: Snippet syntax lint
+        run: node scripts/lint-snippets.mjs
+
+      # Drives the shipped scripts/assets/site.js in a vm context against a
+      # minimal DOM stub: theme cycling, tab selection/sync, TOC scroll-spy.
+      # The site has no build step, so this is the only guard on that file.
+      - name: Client runtime tests
+        run: node --test scripts/test-site-js.mjs
+
+      # Proves every package named in the docs or an example package.json
+      # exists on the registry and is not unexpectedly deprecated. This step
+      # needs network; version drift is reported but is not fatal.
+      - name: Dependency existence and drift check
+        run: node scripts/check-deps.mjs
+
+  # ---------------------------------------------------------------------------
+  # Runnable examples. Separate job because it installs 16 dependency trees and
+  # is far slower than the static checks — a broken snippet should not wait on
+  # it, and it should not wait on a broken snippet.
+  # ---------------------------------------------------------------------------
+  examples:
+    name: Run examples
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # Each example is an independent package with its own lockfile, so each
+      # is installed in its own directory. `npm ci` first (exact lockfile),
+      # falling back to `npm install` if the lockfile and package.json have
+      # drifted. A single example that will not install is not fatal here:
+      # run-examples.mjs reports it as `not-installed`, which is a soft status.
+      - name: Install example dependencies
+        run: |
+          for dir in examples/*/; do
+            [ -f "${dir}package.json" ] || continue
+            echo "::group::install ${dir}"
+            if [ -f "${dir}package-lock.json" ]; then
+              (cd "$dir" && npm ci --no-audit --fund=false) \
+                || (cd "$dir" && npm install --no-audit --fund=false) \
+                || echo "::warning::dependency install failed for ${dir}"
+            else
+              (cd "$dir" && npm install --no-audit --fund=false) \
+                || echo "::warning::dependency install failed for ${dir}"
+            fi
+            echo "::endgroup::"
+          done
+
+      # Boots each app, polls /health, replays smoke.json, runs `npm test`.
+      #
+      # No database service containers are started here on purpose. Examples
+      # that need Postgres, MySQL, MongoDB or Redis declare `requiresService`
+      # in their smoke.json and are reported as SKIPPED when no service is
+      # running, rather than FAILED — the report says which ones they were.
+      # run-examples.mjs exits non-zero only on real failures (failed,
+      # boot-failed, setup-failed, error, no-entry).
+      - name: Boot and smoke-test every example
+        run: node scripts/run-examples.mjs

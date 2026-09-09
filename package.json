@@ -7,7 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docs:build": "node scripts/build.mjs",
+    "docs:check": "node scripts/check.mjs",
+    "docs:lint-sql": "node scripts/lint-sql.mjs",
+    "docs:lint-snippets": "node scripts/lint-snippets.mjs",
+    "docs:check-deps": "node scripts/check-deps.mjs",
+    "docs:examples": "node scripts/run-examples.mjs",
+    "docs:validate": "npm run docs:check && npm run docs:lint-sql && npm run docs:lint-snippets && npm run docs:test-ui && npm run docs:check-deps",
+    "docs:serve": "node scripts/serve.mjs",
+    "docs:test-ui": "node --test scripts/test-site-js.mjs"
   },
   "dependencies": {
     "prism-react-renderer": "^2.4.1",

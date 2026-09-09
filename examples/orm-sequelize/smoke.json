@@ -1,0 +1,17 @@
+{
+  "port": 3023,
+  "entry": "src/server.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/users", "expect": 200 },
+    { "method": "GET", "path": "/users/1", "expect": 200 },
+    { "method": "GET", "path": "/users/1/posts", "expect": 200 },
+    { "method": "GET", "path": "/posts", "expect": 200 },
+    { "method": "GET", "path": "/stats/authors?minPosts=1", "expect": 200 },
+    { "method": "POST", "path": "/users", "body": { "email": "smoke-sequelize@example.com", "name": "Smoke" }, "expect": [201, 409] },
+    { "method": "POST", "path": "/users-with-posts", "body": { "email": "smoke-sequelize-tx@example.com", "name": "Smoke Tx", "posts": [{ "title": "One" }, { "title": "Two", "body": "b" }] }, "expect": [201, 409] },
+    { "method": "GET", "path": "/users?sort=nope", "expect": 400 },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}

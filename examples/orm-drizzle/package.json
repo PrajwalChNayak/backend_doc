@@ -1,0 +1,25 @@
+{
+  "name": "orm-drizzle",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Drizzle ORM over better-sqlite3 from Express 5: a code-first schema, relational queries, a synchronous transaction, and the sql`` tagged template that parameterises every interpolation.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "setup": "node src/migrate.js",
+    "generate": "drizzle-kit generate",
+    "seed": "node src/seed.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "drizzle-orm": "^0.45.2",
+    "express": "^5.2.1",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10"
+  }
+}

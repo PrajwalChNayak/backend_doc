@@ -1,0 +1,23 @@
+{
+  "port": 3011,
+  "entry": "src/server.js",
+  "requiresService": true,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "expect": [
+        200,
+        503
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users",
+      "expect": [
+        200,
+        503
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "port": 3010,
+  "entry": "src/server.js",
+  "requiresService": false,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/node-sqlite/users",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/node-sqlite/users/1",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/node-sqlite/users/1/posts",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/node-sqlite/users?sort=name&direction=desc&limit=2",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/node-sqlite/users?sort=;DROP+TABLE+users",
+      "expect": 400
+    },
+    {
+      "method": "GET",
+      "path": "/node-sqlite/users/999999",
+      "expect": 404
+    },
+    {
+      "method": "GET",
+      "path": "/better-sqlite3/users",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/better-sqlite3/users/1",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/better-sqlite3/users/1/posts",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/better-sqlite3/users?sort=name&direction=desc&limit=2",
+      "expect": 200
+    },
+    {
+      "method": "GET",
+      "path": "/better-sqlite3/users?sort=;DROP+TABLE+users",
+      "expect": 400
+    },
+    {
+      "method": "GET",
+      "path": "/better-sqlite3/users/999999",
+      "expect": 404
+    }
+  ]
+}

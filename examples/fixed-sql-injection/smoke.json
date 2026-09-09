@@ -1,0 +1,12 @@
+{
+  "port": 3005,
+  "entry": "src/server.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/users/search?q=alice", "expect": 200 },
+    { "method": "GET", "path": "/users/search?q=a&sort=id", "expect": 200 },
+    { "method": "GET", "path": "/users/search?q=a&sort=password", "expect": 400 },
+    { "method": "POST", "path": "/login", "body": { "username": "x' OR '1'='1", "password": "x' OR '1'='1" }, "expect": 401 }
+  ]
+}

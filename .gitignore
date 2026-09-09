@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# --- Node/Express handbook -------------------------------------------------
+# docs/ is the generated site and IS committed — GitHub Pages serves it.
+# Example runtime artefacts are not.
+examples/**/node_modules
+examples/**/*.sqlite
+examples/**/*.sqlite3
+examples/**/*.db
+examples/**/data/
+examples/**/uploads/
+examples/**/.env
+.env

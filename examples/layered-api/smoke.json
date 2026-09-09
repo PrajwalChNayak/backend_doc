@@ -1,0 +1,14 @@
+{
+  "port": 3002,
+  "entry": "src/server.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/ready", "expect": [200, 503] },
+    { "method": "POST", "path": "/auth/register", "body": { "email": "smoke@example.com", "name": "Smoke Test", "password": "correct-horse-battery-staple" }, "expect": [200, 201, 409] },
+    { "method": "POST", "path": "/auth/register", "body": { "email": "not-an-email" }, "expect": 400 },
+    { "method": "POST", "path": "/auth/login", "body": { "email": "smoke@example.com", "password": "wrong-password" }, "expect": 401 },
+    { "method": "GET", "path": "/notes", "expect": 401 },
+    { "method": "GET", "path": "/nope", "expect": 404 }
+  ]
+}

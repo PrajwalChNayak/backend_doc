@@ -1,0 +1,10 @@
+{
+  "port": 3003,
+  "entry": "src/server.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/limits", "expect": 200 },
+    { "method": "POST", "path": "/uploads/avatar", "body": "not-multipart", "headers": { "content-type": "application/json" }, "expect": [400, 415, 500] }
+  ]
+}

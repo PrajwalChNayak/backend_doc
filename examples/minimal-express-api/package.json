@@ -1,0 +1,20 @@
+{
+  "name": "minimal-express-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The smallest honest Express 5 API: app/server split, in-memory store, Express 5 catch-all 404, error handler.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.2.2"
+  }
+}

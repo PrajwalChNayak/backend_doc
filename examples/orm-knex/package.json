@@ -1,0 +1,21 @@
+{
+  "name": "orm-knex",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Knex 3 as a query builder over SQLite from Express 5: migrations, seeds, joins, a transaction, and knex.raw bindings with ?? identifier quoting.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "migrate": "node src/migrate.js",
+    "seed": "node src/seed.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.2.1",
+    "knex": "^3.3.0",
+    "zod": "^4.5.4"
+  }
+}

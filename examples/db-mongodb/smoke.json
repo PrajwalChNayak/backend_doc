@@ -1,0 +1,76 @@
+{
+  "port": 3013,
+  "entry": "src/server.js",
+  "requiresService": true,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "expect": [
+        200,
+        503
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users",
+      "expect": [
+        200,
+        503
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/users",
+      "body": {
+        "email": "smoke@example.com",
+        "name": "Smoke",
+        "password": "correct horse battery"
+      },
+      "expect": [
+        201,
+        409,
+        503
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users/000000000000000000000000",
+      "expect": [
+        404,
+        503
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users/000000000000000000000000/posts",
+      "expect": [
+        200,
+        503
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/users/not-an-objectid",
+      "expect": 400
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "body": {
+        "email": {
+          "$gt": ""
+        },
+        "password": {
+          "$ne": null
+        }
+      },
+      "expect": 400
+    },
+    {
+      "method": "GET",
+      "path": "/nope",
+      "expect": 404
+    }
+  ]
+}

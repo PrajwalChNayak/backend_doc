@@ -8,8 +8,39 @@ research. Say "resume" and work continues from **Step 1** below.
 
 ## Current state in one line
 
-Infrastructure is finished and working; **8 of 113** NestJS content pages are
-written. The existing Node/Express site (93 pages) is untouched and still builds.
+**42 of 113** NestJS pages written; 4 sections complete. The existing
+Node/Express site (93 pages) is untouched and still builds.
+
+Last updated 2026-09-11. Sections done: Fundamentals (12/12), Request Handling
+(9/9), Validation (7/7), Databases (13/13). In flight: ORMs, Libraries,
+Advanced, Security.
+
+### Corrections found by reading the shipped packages
+
+| Claim | Reality |
+| --- | --- |
+| `errorCode` shows up in the error response | **No.** `createBody()` accepts it as a 4th argument but no built-in subclass passes it, and `BaseExceptionFilter` never reads it. It sets `exception.errorCode` and nothing else. Recorded in CONTRIBUTING §11.4. |
+| `@nestjs/throttler` is 12.x | **6.5.0** |
+| `@nestjs/graphql` / `@nestjs/apollo` are 12.x | **14.0.0** |
+| `@nestjs/observe` is a first-class SDK | **0.1.8**, pre-1.0 |
+| Terminus ships a Redis health indicator | It does not, in 12.0.0 |
+
+### Validator fixes made this pass
+
+`lint-snippets.mjs` had three real gaps, all found by running it against the new
+TypeScript content:
+
+1. It **silently skipped every `ts` block** on a Node without
+   `stripTypeScriptTypes`, printing "0 failures" while checking nothing. It now
+   exits non-zero and says so. **Run it on Node 24.**
+2. Constructor parameter properties — Nest's idiomatic DI form — are rejected by
+   strip-only mode. It now falls back to `transform` mode.
+3. A bare decorated method or object literal is legitimate documentation but not
+   a standalone program. Both are now classified as fragments.
+
+`check.mjs` gained the NestJS rules (moved `nats`, `subscriptions-transport-ws`,
+Express 4 paths in Nest decorators, un-nested Joi options) and
+`SECTION_REQUIREMENTS` for the new sections.
 
 ---
 

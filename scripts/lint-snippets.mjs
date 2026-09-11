@@ -287,13 +287,44 @@ async function main() {
           // standalone programs: a class member (a decorated method shown
           // without its class) and a bare object literal (a provider
           // definition, an options block).
+          // Imports must stay at module level — wrapping them inside a class
+          // body is itself a syntax error — so the leading import block is
+          // split off and re-prepended around whichever wrapper fits.
           if (stripped === null) {
+            const srcLines = source.split('\n')
+            let cut = 0
+            let insideImport = false
+            for (let n = 0; n < srcLines.length; n++) {
+              const line = srcLines[n]
+              if (insideImport) {
+                cut = n + 1
+                if (/\bfrom\b|['"]\s*;?\s*$/.test(line)) insideImport = false
+                continue
+              }
+              if (/^\s*(import|export)\b/.test(line)) {
+                cut = n + 1
+                // A multi-line import: the specifier list is still open.
+                if (/\{/.test(line) && !/\bfrom\b/.test(line)) insideImport = true
+                continue
+              }
+              if (!line.trim() && cut === n) {
+                cut = n + 1
+                continue
+              }
+              break
+            }
+            const head = srcLines.slice(0, cut).join('\n')
+            const rest = srcLines.slice(cut).join('\n')
+
             for (const wrap of [
               (src) => `class __Fragment {\n${src}\n}`,
+              (src) => `async function __fragment() {\n${src}\n}`,
               (src) => `void (${src});`,
             ]) {
               try {
-                stripped = nodeModule.stripTypeScriptTypes(wrap(source), { mode: 'transform' })
+                stripped = nodeModule.stripTypeScriptTypes(`${head}\n${wrap(rest)}`, {
+                  mode: 'transform',
+                })
                 classMemberFragments.push({ file: rel, line: fence.startLine + frontMatterLines })
                 break
               } catch {

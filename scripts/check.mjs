@@ -362,6 +362,24 @@ async function main() {
       err(rel, '"## Related topics" must be the last heading on the page')
     }
 
+    // Joi v18+ moved library-specific settings under
+    // `validationOptions.libraryOptions`. A `validationOptions` block holding
+    // Joi keys directly is the Nest 11 shape and no longer takes effect.
+    if (!legacyExemptPages.includes(page.path)) {
+      const joiLines = body.split('\n')
+      for (let i = 0; i < joiLines.length; i++) {
+        if (!/validationOptions\s*:\s*\{/.test(joiLines[i])) continue
+        const window = joiLines.slice(i, i + 8).join('\n')
+        const hasJoiKey = JOI_LEGACY_OPTION_KEYS.some((k) => new RegExp(`\\b${k}\\s*:`).test(window))
+        if (hasJoiKey && !/libraryOptions/.test(window)) {
+          err(
+            `${rel}:${i + 1 + lineOffset}`,
+            'Joi v18+ needs library-specific settings nested under `validationOptions.libraryOptions`'
+          )
+        }
+      }
+    }
+
     // code fences must declare a language
     for (const fence of fenceLanguages(body)) {
       if (!fence.info) err(`${rel}:${fence.line + lineOffset}`, 'code fence has no language')

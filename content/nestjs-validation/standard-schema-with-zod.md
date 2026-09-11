@@ -5,7 +5,7 @@ status: current
 updated: 2026-09-11
 ---
 
-NestJS 12 added a second validation stack. `StandardSchemaValidationPipe` takes a schema from the parameter decorator instead of a DTO class, validates against it, and hands your handler the schema's output. It works with any library that implements the [Standard Schema](https://github.com/standard-schema/standard-schema) spec — Zod 4.5.4, Valibot 1.4.2 and ArkType 2.2.3 all do.
+NestJS 12 added a second validation stack. `StandardSchemaValidationPipe` takes a schema from the parameter decorator instead of a DTO class, validates against it, and hands your handler the schema's output. It works with any library that implements the [Standard Schema](https://github.com/standard-schema/standard-schema) spec — Zod 4.6.2, Valibot 1.4.2 and ArkType 2.2.3 all do.
 
 This is the schema-first alternative to [the ValidationPipe](validation-pipe.md). It does not replace it; both ship in `@nestjs/common` 12.0.1 and both can be registered at once. [Choosing an approach](choosing-an-approach.md) is the page that argues about which one you should use.
 
@@ -337,7 +337,7 @@ This is the practical migration path: leave existing DTO classes alone, write ne
 
 **OpenAPI takes an extra step.** `@nestjs/swagger` 12.0.1 reads decorator metadata from DTO classes; it does not read a Standard Schema. Generate the document from the schema instead — Zod 4 ships `z.toJSONSchema()`, and `@asteasolutions/zod-to-openapi` 9.1.0 or `zod-openapi` 6.0.2 produce a full OpenAPI document. See [API documentation](../express-libraries/api-documentation.md) and [Choosing an approach](choosing-an-approach.md).
 
-**Pin the schema library.** Zod 4.5.4, Valibot 1.4.2 and ArkType 2.2.3 are the verified versions here. These libraries move quickly, and coercion and error-message details change between minors.
+**Pin the schema library.** Zod 4.6.2, Valibot 1.4.2 and ArkType 2.2.3 are the verified versions here. These libraries move quickly, and coercion and error-message details change between minors.
 
 **One error envelope.** Whichever stack a route uses, the client should see the same failure shape. One `exceptionFactory` per stack producing the same body, plus one exception filter, is the cheapest way to get there — see [Exception filters](../nestjs-request-handling/exception-filters.md).
 

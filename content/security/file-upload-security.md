@@ -73,7 +73,7 @@ curl -s -X POST http://localhost:3000/avatar \
 
 ### The fix
 
-Verify the **magic bytes** — the actual leading bytes of the content — and match them against an allow-list of types you accept. `file-type` (22.0.2, ESM-only) sniffs the buffer and returns the detected `ext`/`mime`, or `undefined` when it matches nothing:
+Verify the **magic bytes** — the actual leading bytes of the content — and match them against an allow-list of types you accept. `file-type` (22.1.0, ESM-only) sniffs the buffer and returns the detected `ext`/`mime`, or `undefined` when it matches nothing:
 
 ```js good title="src/verify-type.js"
 import { fileTypeFromBuffer } from 'file-type'

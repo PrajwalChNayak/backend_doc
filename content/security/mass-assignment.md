@@ -132,7 +132,7 @@ $ psql -Atc "select role, is_verified from users where id = 1"
 user|f
 ```
 
-That output is from a real run against Express 5.2.1 with Zod 4.5.4.
+That output is from a real run against Express 5.2.1 with Zod 4.6.2.
 
 :::note
 `z.object()` in Zod 4 **strips** unknown keys rather than rejecting them — which is safe (they never reach your data) but silent. `z.strictObject()` rejects. `z.looseObject()` passes them through and is the one to avoid on a write path. Pick strict for request bodies so a client sending a field you removed finds out immediately.
@@ -234,7 +234,7 @@ const user = await prisma.user.update({
 Prisma 8 exists on npm's `latest` dist-tag as a release candidate. This page documents **7.10.0**, the current stable release.
 :::
 
-### Mongoose 9.9.5 — `strict` and `select: false`
+### Mongoose 9.10.0 — `strict` and `select: false`
 
 Mongoose schemas are `strict` by default: a property not in the schema is silently dropped on save. That protects you from *undeclared* fields only — `role`, being declared, is written normally.
 

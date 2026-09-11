@@ -215,7 +215,7 @@ app.post('/books', async (req, res) => {
 })
 ```
 
-That uses Zod 4 (4.5.4), where the top-level `z.email()` replaces `z.string().email()`.
+That uses Zod 4 (4.6.2), where the top-level `z.email()` replaces `z.string().email()`.
 
 ## The 404 catch-all
 

@@ -171,7 +171,7 @@ For genuinely large responses, stream instead of buffering. See [Streams and buf
 
 ## Compression belongs at the proxy
 
-`compression` 1.8.1 works and is the right answer when nothing sits in front of you. When something does — nginx, an ALB, Cloudflare, an ingress controller — let it compress.
+`compression` 1.8.2 works and is the right answer when nothing sits in front of you. When something does — nginx, an ALB, Cloudflare, an ingress controller — let it compress.
 
 The reason is the event loop again. gzip is CPU work, and doing it in Node takes the one thread away from request handling. nginx does it on a worker process that is not serving your JavaScript, and a CDN does it on someone else's hardware entirely.
 

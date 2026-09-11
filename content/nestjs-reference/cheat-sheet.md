@@ -78,7 +78,7 @@ For CommonJS, drop `"type": "module"`, use `module: "commonjs"`, and omit the `.
 | Package | Version |
 | --- | --- |
 | `@nestjs/core`, `@nestjs/common`, `@nestjs/platform-express`, `@nestjs/testing` | 12.0.1 |
-| `@nestjs/cli`, `@nestjs/schematics` | 12.0.0 |
+| `@nestjs/cli`, `@nestjs/schematics` | 12.0.1 |
 | `@nestjs/config`, `@nestjs/passport`, `@nestjs/mapped-types` | 12.0.0 |
 | `@nestjs/jwt`, `@nestjs/swagger`, `@nestjs/schedule`, `@nestjs/microservices` | 12.0.1 |
 | `@nestjs/throttler` | **6.5.0** — not on the 12 line |

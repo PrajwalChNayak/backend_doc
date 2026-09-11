@@ -18,7 +18,7 @@ The second Nest-specific factor is the **repository seam**. Nest's whole value i
 | Option | Nest package | Version | What you write yourself |
 | --- | --- | --- | --- |
 | [TypeORM](./typeorm.md) | `@nestjs/typeorm` | 12.0.1 with `typeorm` 1.1.1 | Entities and migrations |
-| [Mongoose](./mongoose.md) | `@nestjs/mongoose` | 12.0.0 with `mongoose` 9.9.5 | Schemas |
+| [Mongoose](./mongoose.md) | `@nestjs/mongoose` | 12.0.0 with `mongoose` 9.10.0 | Schemas |
 | [Prisma](./prisma.md) | **none** | `@prisma/client` 7.10.0 | A `PrismaService` and a `PrismaModule` — about 25 lines |
 | [Drizzle](./drizzle.md) | **none** | `drizzle-orm` 0.45.2 | A custom provider, a token, and the shutdown hook |
 | [Raw drivers](./raw-drivers.md) | **none** | `pg` 8.23.0, `mysql2` 3.24.4, `better-sqlite3` 13.0.3 | The pool provider, the repository layer, the SQL |

@@ -75,7 +75,7 @@ Not every item applies to every service. Deciding an item does not apply is fine
 - [ ] Pagination limits are capped server-side regardless of what the client sends — [Performance](performance.md)
 - [ ] Every SQL query is parameterised; `scripts/lint-sql.mjs` passes — [SQL injection](../security/sql-injection.md)
 - [ ] Mongo queries cannot receive an operator object from user input — [NoSQL injection](../security/nosql-injection.md)
-- [ ] Uploads are checked by magic bytes with `file-type` 22.0.2, not by extension or `content-type` — [File upload security](../security/file-upload-security.md)
+- [ ] Uploads are checked by magic bytes with `file-type` 22.1.0, not by extension or `content-type` — [File upload security](../security/file-upload-security.md)
 - [ ] Uploads are size-limited, stored outside the web root, and served with a safe content type — [File upload security](../security/file-upload-security.md)
 - [ ] Any user text rendered into HTML is escaped or sanitized — [XSS](../security/xss.md)
 - [ ] File paths built from user input are resolved and confirmed inside the allowed root — [Files and paths](../node/fs-and-path.md)

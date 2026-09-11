@@ -14,7 +14,7 @@ Two floors apply and they are different numbers.
 | To do this in CI | Needs Node |
 | --- | --- |
 | **Run** the built app (`node dist/main.js`, e2e tests) | v20.19+, v22.12+, or v26+ — `@nestjs/core@12.0.1` declares `engines.node: ">= 20"` |
-| **Run the CLI** (`nest build`, `nest generate`) | **v22.22.3+, v24.15+, or v26+** — `@nestjs/schematics@12.0.0` declares `>=22.12.0` because of the Angular devkit underneath |
+| **Run the CLI** (`nest build`, `nest generate`) | **v22.22.3+, v24.15+, or v26+** — `@nestjs/schematics@12.0.1` declares `>=22.12.0` because of the Angular devkit underneath |
 
 Since the workflow builds, the higher floor is the one that governs. **Node 24 LTS** satisfies both, which is what this handbook targets and what the workflow below pins.
 

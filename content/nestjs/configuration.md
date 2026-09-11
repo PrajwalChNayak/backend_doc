@@ -207,7 +207,7 @@ Three things this buys you beyond "it is not missing":
 - **Defaults in one place**, rather than repeated as the second argument to every `config.get()` call.
 - **A single readable failure.** Nest formats every issue with its path, so you see all four missing variables at once instead of fixing them one deploy at a time.
 
-Zod is **4.5.4** here and the Zod 4 API is what this handbook uses — `z.url()`, not `z.string().url()`. Valibot (1.4.2) and ArkType (2.2.3) work the same way, since the interface is the Standard Schema one and not a library-specific adapter. The same schemas are used for request validation in [Standard Schema with Zod](../nestjs-validation/standard-schema-with-zod.md).
+Zod is **4.6.2** here and the Zod 4 API is what this handbook uses — `z.url()`, not `z.string().url()`. Valibot (1.4.2) and ArkType (2.2.3) work the same way, since the interface is the Standard Schema one and not a library-specific adapter. The same schemas are used for request validation in [Standard Schema with Zod](../nestjs-validation/standard-schema-with-zod.md).
 
 ### Joi v18
 

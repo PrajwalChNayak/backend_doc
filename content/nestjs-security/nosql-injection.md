@@ -7,7 +7,7 @@ updated: 2026-09-11
 
 There is no string to escape. The payload is a JSON object, the driver receives it as an object, and MongoDB executes it as a query document exactly as designed. Nothing is malformed at any layer — which is why a filter built from `request.body` is a login bypass, and why the fix is a *type* check rather than an escaping step.
 
-The engine-level mechanics are on [NoSQL injection](../security/nosql-injection.md). This page is the Nest version: where the untyped value gets in, which pipe settings stop it, and what `mongoose` **9.9.5** gives you on top.
+The engine-level mechanics are on [NoSQL injection](../security/nosql-injection.md). This page is the Nest version: where the untyped value gets in, which pipe settings stop it, and what `mongoose` **9.10.0** gives you on top.
 
 ## The threat
 

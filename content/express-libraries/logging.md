@@ -251,7 +251,7 @@ If you prefer a transport during development, use `transport: { target: 'pino-pr
 
 ## morgan, the simpler alternative
 
-`morgan` 1.12.0 writes Apache-style access logs. It is one line of setup and does exactly one thing.
+`morgan` 1.12.1 writes Apache-style access logs. It is one line of setup and does exactly one thing.
 
 ```js
 import morgan from 'morgan'

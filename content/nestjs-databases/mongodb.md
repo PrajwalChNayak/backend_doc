@@ -10,7 +10,7 @@ updated: 2026-09-11
 ## Installing
 
 ```bash
-npm install @nestjs/mongoose@12.0.0 mongoose@9.9.5
+npm install @nestjs/mongoose@12.0.0 mongoose@9.10.0
 ```
 
 `@nestjs/mongoose` 12 targets Nest 12 and Mongoose 9. It manages the connection lifecycle, so you do not call `mongoose.connect()` yourself and you do not close it on shutdown — the module's own provider does, given `app.enableShutdownHooks()`.

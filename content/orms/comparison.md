@@ -43,7 +43,7 @@ Two honorable mentions this handbook does not cover in depth. **Kysely** (0.29.5
 | [Drizzle](./drizzle.md) | **0.45.2** | `0.45.2` | `1.0.0-rc.4` on the `rc` tag |
 | [TypeORM](./typeorm.md) | **1.1.1** | `1.1.1` | 1.0 shipped 2026-05; ignore `0.3.x` docs |
 | [Sequelize](./sequelize.md) | **6.37.8** | `6.37.8` | v7 still alpha (`7.0.0-alpha.9`) |
-| [Mongoose](./mongoose.md) | **9.9.5** | `9.9.5` | MongoDB only |
+| [Mongoose](./mongoose.md) | **9.10.0** | `9.10.0` | MongoDB only |
 | [Knex](./knex.md) | **3.3.0** | `3.3.0` | Query builder, not an ORM |
 
 ### Type safety

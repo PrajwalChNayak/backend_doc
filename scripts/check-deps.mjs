@@ -82,6 +82,24 @@ const PLACEHOLDER_SCOPES = [
   '@app/',
 ]
 
+/**
+ * Versions this site pins on purpose, so "behind current stable" is the correct
+ * state rather than staleness. Reported separately with the reason, never as
+ * drift — otherwise the drift list is permanently noisy and stops being read.
+ */
+const DELIBERATE_PINS = new Map([
+  [
+    'multer',
+    '2.2.0 is what @nestjs/platform-express@12.0.1 bundles. The Express pages ' +
+      'document 2.3.0; both are correct in their own context.',
+  ],
+  [
+    '@types/node',
+    'Matched to the Node 24 LTS line this handbook targets, not the newest ' +
+      'published major.',
+  ],
+])
+
 /** Flags that consume the next token, so it is an argument and not a package. */
 const VALUE_FLAGS = new Set([
   '--name', '--filter', '-w', '--workspace', '--registry', '--prefix', '--tag',
@@ -278,6 +296,7 @@ async function main() {
   const missing = []
   const failed = []
   const behind = []
+  const pinned = []
   const deprecated = []
   let ok = 0
 
@@ -301,6 +320,10 @@ async function main() {
     for (const documented of rec.documentedVersions) {
       if (!/^\d+\.\d+\.\d+$/.test(documented)) continue
       if (compareSemver(documented, r.latestStable) < 0) {
+        if (DELIBERATE_PINS.has(r.name)) {
+          pinned.push({ name: r.name, documented, latestStable: r.latestStable })
+          continue
+        }
         behind.push({
           name: r.name,
           documented,
@@ -316,6 +339,7 @@ async function main() {
   console.log(`  not found        ${missing.length}`)
   console.log(`  lookup failed    ${failed.length}`)
   console.log(`  version drift    ${behind.length}`)
+  console.log(`  deliberate pins  ${pinned.length}`)
   console.log(`  deprecated       ${deprecated.length}`)
 
   const tagAnomalies = results.filter((r) => r.latestTag && r.latestStable && r.latestTag !== r.latestStable)
@@ -333,6 +357,15 @@ async function main() {
     for (const d of deprecated) {
       console.log(`    ${d.expected ? '·' : '✖'} ${d.name}${d.expected ? ' (documented as deprecated — expected)' : ''}`)
       console.log(`        ${d.message}`)
+    }
+  }
+
+  if (pinned.length) {
+    console.log('')
+    console.log('  Behind current stable ON PURPOSE')
+    for (const p of pinned) {
+      console.log(`    · ${p.name}: ${p.documented} (current ${p.latestStable})`)
+      console.log(`        ${DELIBERATE_PINS.get(p.name)}`)
     }
   }
 

@@ -264,7 +264,7 @@ Environment variables set by your platform are a reasonable baseline. A secrets 
 
 | Service | Node client | Notes |
 | --- | --- | --- |
-| AWS Secrets Manager | `@aws-sdk/client-secrets-manager` 3.1128.0 | native rotation via Lambda; IAM-scoped |
+| AWS Secrets Manager | `@aws-sdk/client-secrets-manager` 3.1130.0 | native rotation via Lambda; IAM-scoped |
 | GCP Secret Manager | `@google-cloud/secret-manager` 7.1.0 | versioned secrets, IAM-scoped |
 | HashiCorp Vault | HTTP API (or `node-vault` 0.12.0) | dynamic short-lived database credentials |
 

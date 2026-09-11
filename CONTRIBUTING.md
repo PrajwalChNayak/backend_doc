@@ -126,7 +126,7 @@ Pin these in prose and in `examples/*/package.json`. Use a caret range (`^`) in
 | `cors` | 2.8.6 | |
 | `express-rate-limit` | 8.7.0 | |
 | `rate-limit-redis` | 6.0.1 | store for the above |
-| `zod` | 4.5.4 | Zod 4 API — `z.email()`, not `z.string().email()` |
+| `zod` | 4.6.2 | Zod 4 API — `z.email()`, not `z.string().email()` |
 | `express-validator` | 7.3.2 | |
 | `jsonwebtoken` | 9.0.3 | |
 | `jose` | 6.2.12 | preferred for JWKS / modern JWT |
@@ -141,11 +141,11 @@ Pin these in prose and in `examples/*/package.json`. Use a caret range (`^`) in
 | `cookie-parser` | 1.4.7 | |
 | `cookie-session` | 2.1.1 | |
 | `csrf-csrf` | 4.0.3 | `csurf` is **archived/deprecated** — never recommend it |
-| `compression` | 1.8.1 | |
+| `compression` | 1.8.2 | |
 | `pino` | 10.3.1 | |
 | `pino-http` | 11.0.0 | |
 | `pino-pretty` | 13.1.3 | dev only |
-| `morgan` | 1.12.0 | |
+| `morgan` | 1.12.1 | |
 | `winston` | 3.19.0 | |
 | `supertest` | 7.2.2 | |
 | `swagger-ui-express` | 5.0.1 | |
@@ -153,7 +153,7 @@ Pin these in prose and in `examples/*/package.json`. Use a caret range (`^`) in
 | `zod-openapi` | 6.0.2 | alternative |
 | `express-openapi-validator` | 5.6.2 | |
 | `multer` | **2.3.0** | **multer 1.x is EOL and deprecated on npm** — see below |
-| `file-type` | 22.0.2 | ESM-only; magic-byte sniffing |
+| `file-type` | 22.1.0 | ESM-only; magic-byte sniffing |
 | `sharp` | 0.35.4 | image re-encode |
 | `@aws-sdk/client-s3` | 3.1127.0 | |
 | `dotenv` | 17.4.2 | prefer `node --env-file` |
@@ -196,7 +196,7 @@ Pin these in prose and in `examples/*/package.json`. Use a caret range (`^`) in
 | `typeorm` | 1.1.1 | 1.1.1 | TypeORM reached 1.0 — do **not** write `0.3.x` |
 | `sequelize` | 6.37.8 | 6.37.8 | v7 still alpha |
 | `sequelize-cli` | 6.6.5 | 6.6.5 | |
-| `mongoose` | 9.9.5 | 9.9.5 | |
+| `mongoose` | 9.10.0 | 9.10.0 | |
 | `knex` | 3.3.0 | 3.3.0 | |
 | `kysely` | 0.29.5 | 0.29.5 | mention only |
 | `objection` | 3.1.5 | 3.1.5 | mention only; low activity |
@@ -552,7 +552,7 @@ docs alone).
 | `@nestjs/platform-fastify` | 12.0.1 | |
 | `@nestjs/testing` | 12.0.1 | |
 | `@nestjs/cli` | **12.0.0** | `engines.node: ">= 20.11"` |
-| `@nestjs/schematics` | **12.0.0** | `engines.node: ">=22.12.0"` — this is why the CLI needs a newer Node than the app |
+| `@nestjs/schematics` | **12.0.1** | `engines.node: ">=22.12.0"` — this is why the CLI needs a newer Node than the app |
 | `@nestjs/config` | 12.0.0 | depends on `@standard-schema/spec` 1.1.0 and `dotenv` 17.4.2 |
 | `@nestjs/jwt` | 12.0.1 | |
 | `@nestjs/passport` | 12.0.0 | |
@@ -598,16 +598,16 @@ section — that is the version Nest pins, and it is still a 2.x release. multer
 **1.x** is end of life and npm-deprecated; never present it as an option.
 
 **Supporting packages**, verified the same day: `class-validator` 0.15.1,
-`class-transformer` 0.5.1, `reflect-metadata` 0.2.2, `rxjs` 7.8.2, `zod` 4.5.4,
+`class-transformer` 0.5.1, `reflect-metadata` 0.2.2, `rxjs` 7.8.2, `zod` 4.6.2,
 `valibot` 1.4.2, `arktype` 2.2.3, `@standard-schema/spec` 1.1.0, `typeorm` 1.1.1,
-`@prisma/client` 7.10.0, `mongoose` 9.9.5, `drizzle-orm` 0.45.2, `pg` 8.23.0,
+`@prisma/client` 7.10.0, `mongoose` 9.10.0, `drizzle-orm` 0.45.2, `pg` 8.23.0,
 `mysql2` 3.24.4, `better-sqlite3` 13.0.3, `ioredis` 6.0.0, `helmet` 8.3.0,
 `argon2` 0.45.1, `bcrypt` 6.0.0, `passport` 0.7.0, `passport-jwt` 4.0.1,
 `joi` 18.2.8, `bullmq` 6.3.4, `cache-manager` 7.2.9, `@keyv/redis` 5.1.6,
 `pino` 10.3.1, `nestjs-pino` 5.1.0, `supertest` 7.2.2, `vitest` 5.0.0,
 `oxlint` 1.82.0, `typescript` 7.0.2, `@nats-io/transport-node` 3.4.0,
 `graphql` 17.0.2, `graphql-ws` 6.2.1, `@apollo/server` 5.5.1, `socket.io` 4.8.3,
-`@casl/ability` 7.0.1, `file-type` 22.0.2, `@aws-sdk/client-s3` 3.1128.0.
+`@casl/ability` 7.0.1, `file-type` 22.1.0, `@aws-sdk/client-s3` 3.1130.0.
 
 **Prisma anomaly, unchanged from Part 1:** the npm `latest` tag for `prisma` is
 `8.0.0-rc.13`, a release candidate. The latest **stable** is `7.10.0`, and
@@ -645,6 +645,21 @@ paths and middleware.** Do not re-explain them — cross-link
 | `@Get(':file.:ext?')` | `@Get(':file{.:ext}')` |
 | inline regex in the path string | an array of paths, or a param constraint |
 | `()[]?+!` unescaped | escape with a backslash |
+
+:::warning Nest does NOT inherit every Express 5 default
+Two verified differences, read from `@nestjs/platform-express@12.0.1`:
+
+- **`express.urlencoded()` is registered with `{ extended: true }`** — the
+  *opposite* of bare Express 5, which defaults to `extended: false`. The adapter
+  calls `getBodyParserOptions('urlencoded', rawBody, { extended: true })`. So a
+  nested form body that Express 5 would flatten arrives parsed in Nest. Do not
+  copy the Express page's `extended: false` claim onto a Nest page.
+- The **query parser is untouched**, so it stays on Express 5's `'simple'`.
+
+`ExpressAdapter.setNotFoundHandler(handler, prefix)` also scopes Nest's 404 to
+the global prefix — which is what makes mounting Nest beside an existing Express
+app work.
+:::
 
 ### 11.4 NestJS 12 breaking and notable changes
 

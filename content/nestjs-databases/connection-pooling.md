@@ -51,7 +51,7 @@ Each integration has its own name for the same number.
 | `pg` 8.23.0 | `max` on `new Pool()` | 10 |
 | `mysql2` 3.24.4 | `connectionLimit` on `createPool()` | 10 |
 | `@nestjs/typeorm` 12.0.1 + `typeorm` 1.1.1 | `poolSize` in the module options, or driver `extra` | driver default |
-| `@nestjs/mongoose` 12.0.0 + `mongoose` 9.9.5 | `maxPoolSize` / `minPoolSize` | 100 / 0 |
+| `@nestjs/mongoose` 12.0.0 + `mongoose` 9.10.0 | `maxPoolSize` / `minPoolSize` | 100 / 0 |
 | `@prisma/client` 7.10.0 | driver-adapter options — `max` on `PrismaPg` | 10 |
 | `ioredis` 6.0.0 | no pool; one multiplexed connection | — |
 | `better-sqlite3` 13.0.3 | no pool; one handle | — |

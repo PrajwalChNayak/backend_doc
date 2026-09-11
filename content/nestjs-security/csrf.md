@@ -264,11 +264,20 @@ The default cookie name starts with `__Host-`, which browsers accept **only** wh
 
 ### Wiring it as Nest middleware
 
-Register it through `configure()`, not `app.use()` in `main.ts`. The reason is specific and verifiable:
+`doubleCsrfProtection` reports a failure by calling `next(invalidCsrfTokenError)` — it does **not** throw. What happens next is worth knowing exactly, because the folklore on this is wrong in both directions.
 
-`doubleCsrfProtection` reports a failure by calling `next(invalidCsrfTokenError)` — it does not throw. Nest's middleware wrapper (`RouterProxy`) catches **thrown** exceptions and routes them through your exception filters; an error handed to `next()` goes down the Express chain instead and is rendered by Express's own final handler as an HTML page. Your API then answers a CSRF failure with `<pre>invalid csrf token</pre>` while every other error is JSON.
+Nest's Express adapter mounts an error-handling layer at the root during `app.init()`, so an error handed to `next()` from any middleware does reach Nest's exception layer. `BaseExceptionFilter` then recognizes the `http-errors` signature that `csrf-csrf` produces and replies with the status and message from it:
 
-So convert it:
+```json title="403 Forbidden — the default, with no extra wiring"
+{ "statusCode": 403, "message": "invalid csrf token" }
+```
+
+Two consequences follow, and they are the reason to wrap it anyway:
+
+- **The error is not an `HttpException`.** A global filter declared `@Catch(HttpException)` — the common shape for an application's error-formatting filter — does not match it, and it falls through to the framework's default body instead of yours. Only a catch-all `@Catch()` sees it.
+- **Route-scoped filters never see it at all.** Middleware runs before the handler is resolved, so `@UseFilters()` on a controller is not in the path.
+
+Converting it into a Nest exception fixes both, and costs four lines:
 
 ```ts good title="src/csrf/csrf.middleware.ts"
 import { ForbiddenException, Injectable } from '@nestjs/common'
@@ -280,14 +289,17 @@ import { doubleCsrfProtection } from './csrf.config.js'
 export class CsrfMiddleware implements NestMiddleware {
   use(request: Request, response: Response, next: NextFunction): void {
     doubleCsrfProtection(request, response, (error?: unknown) => {
-      // Thrown synchronously from inside use(), so Nest's middleware proxy
-      // catches it and the application's exception filters format the body.
+      // csrf-csrf calls this synchronously, so throwing here propagates out of
+      // use() and is caught by Nest's middleware proxy — which means the
+      // application's own @Catch(HttpException) filters format the response.
       if (error) throw new ForbiddenException('Invalid CSRF token')
       next()
     })
   }
 }
 ```
+
+Register it through `configure()` rather than `app.use()`: only middleware bound that way is wrapped in Nest's middleware proxy, which is what turns the thrown exception into a filtered response. `app.use()` middleware that throws lands in the same root error layer as `next(err)`, so you would be back to the default body.
 
 ```ts good title="src/app.module.ts"
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
@@ -494,7 +506,7 @@ The cross-session test is the one that catches a `getSessionIdentifier` returnin
 - **Believing `enableCors()` handles it.** CORS governs reads; CSRF is about writes that were already sent.
 - **Adding CSRF tokens to a pure bearer-token API.** Cost with no benefit, and it breaks non-browser clients.
 - **Forgetting the one cookie-authenticated endpoint.** `POST /auth/refresh` with an `httpOnly` refresh cookie is in scope even when nothing else is.
-- **Registering `doubleCsrfProtection` with `app.use()` in `main.ts`.** It reports failures through `next(err)`, which bypasses your exception filters and answers with Express's HTML error page.
+- **Registering `doubleCsrfProtection` with `app.use()` and expecting your own error shape.** It reports failures through `next(err)` with an `http-errors` object, which Nest's default filter formats — a global `@Catch(HttpException)` filter never matches it.
 - **Registering the CSRF middleware before `cookie-parser` or the session.** `req.cookies` is undefined and every write fails.
 - **Keeping the `__Host-` cookie name in development.** Browsers refuse to store it over plain HTTP, and the resulting 403s look like a code bug.
 - **A constant `getSessionIdentifier`.** Any user's token then validates for any other user.

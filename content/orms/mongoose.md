@@ -1,13 +1,13 @@
 ---
 title: Mongoose
-description: Mongoose 9.9.5 — schemas over a schemaless database, populate, transactions, and stopping operator injection with sanitizeFilter.
+description: Mongoose 9.10.0 — schemas over a schemaless database, populate, transactions, and stopping operator injection with sanitizeFilter.
 status: current
 updated: 2026-09-08
 ---
 
 Mongoose puts a schema, casting layer, validation system and middleware pipeline on top of the MongoDB Node driver. MongoDB does not enforce document shape, so Mongoose's real job is to enforce it in your application — which also means its security model is about **operator injection**, not SQL injection.
 
-This page documents **Mongoose 9.9.5**, which requires Node `>=20.19.0` and bundles the MongoDB driver (`mongodb` ~7.5).
+This page documents **Mongoose 9.10.0**, which requires Node `>=20.19.0` and bundles the MongoDB driver (`mongodb` ~7.5).
 
 :::warning
 Mongoose 9 removed callback support across the API and changed middleware signatures. **Pre middleware no longer receives a `next` argument** — hooks must be `async` functions or return promises. Most Mongoose material online predates this. If a snippet calls `next()` in a `pre` hook or passes a callback to `save()`, it is Mongoose 7 or earlier.
@@ -40,15 +40,15 @@ Mongoose fixes that at the application boundary: a schema, casting on write, val
 :::tabs
 @tab npm
 ```bash
-npm install mongoose@9.9.5
+npm install mongoose@9.10.0
 ```
 @tab pnpm
 ```bash
-pnpm add mongoose@9.9.5
+pnpm add mongoose@9.10.0
 ```
 @tab yarn
 ```bash
-yarn add mongoose@9.9.5
+yarn add mongoose@9.10.0
 ```
 :::
 

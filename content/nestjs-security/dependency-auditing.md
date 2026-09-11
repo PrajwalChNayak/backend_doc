@@ -41,7 +41,7 @@ node_modules/@nestjs/cli/node_modules/tar
 
 Read that carefully before doing anything. The path is `@nestjs/cli/node_modules/tar` — the CLI is a **development** dependency, it is not in your production image, and the vulnerability requires you to parse a hostile tar file, which the CLI does not do with attacker input. Fixing it is housekeeping, not security.
 
-This is the whole problem with `npm audit` on a Nest project. `@nestjs/cli` 12.0.0 and `@nestjs/schematics` 12.0.0 pull in the Angular devkit, which is an enormous tree, and it is the source of most of what you will see. An audit that reports forty issues that nobody triages is worse than no audit, because it trains the team to ignore the output.
+This is the whole problem with `npm audit` on a Nest project. `@nestjs/cli` 12.0.0 and `@nestjs/schematics` 12.0.1 pull in the Angular devkit, which is an enormous tree, and it is the source of most of what you will see. An audit that reports forty issues that nobody triages is worse than no audit, because it trains the team to ignore the output.
 
 ### Cut the development noise first
 

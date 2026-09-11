@@ -47,7 +47,7 @@ export default app
 
 Register it **before** the routes whose responses you want compressed. Middleware wraps `res.write`/`res.end`, so anything that has already written cannot be compressed retroactively.
 
-`compression` 1.8.1 supports `gzip`, `deflate` and `br` (Brotli), selected from the client's `Accept-Encoding`.
+`compression` 1.8.2 supports `gzip`, `deflate` and `br` (Brotli), selected from the client's `Accept-Encoding`.
 
 ## How it decides
 

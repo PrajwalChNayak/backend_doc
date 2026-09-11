@@ -7,7 +7,7 @@ updated: 2026-09-11
 
 Five options, one decision. This page scores them on the dimensions that change how a Nest codebase feels six months in, and then tells you which to pick. The library-level comparison — including Sequelize, Knex, Kysely and Objection — is in [Comparison table](../orms/comparison.md) and is still correct; everything here is either Nest-specific or a dimension where Nest changes the weighting.
 
-Versions were verified against the npm registry on 2026-09-09: `@nestjs/typeorm` 12.0.1, `typeorm` 1.1.1, `@nestjs/mongoose` 12.0.0, `mongoose` 9.9.5, `@prisma/client` 7.10.0, `drizzle-orm` 0.45.2, `pg` 8.23.0.
+Versions were verified against the npm registry on 2026-09-09: `@nestjs/typeorm` 12.0.1, `typeorm` 1.1.1, `@nestjs/mongoose` 12.0.0, `mongoose` 9.10.0, `@prisma/client` 7.10.0, `drizzle-orm` 0.45.2, `pg` 8.23.0.
 
 ## Why it exists
 
@@ -100,7 +100,7 @@ Two rows deserve reading twice.
 | --- | --- | --- | --- | --- | --- | --- |
 | TypeORM | 2016 | **1.1.1** (1.0 in May 2026) | 10 | metadata build, scales with schema size | Medium-high | **The web is full of `0.3.x`** — nearly every global helper in it was removed |
 | Prisma | 2019 | **7.10.0** | 1 (plus a driver adapter) | client load | **Low** — the schema DSL is the whole curve | Docs default to the **v8 RC**; v7 lives under a separate path |
-| Mongoose | 2010 | **9.9.5** | 6 (bundles the driver) | small | Medium — the schema layer is easy, the query semantics are not | Most material predates the Mongoose 9 hook changes |
+| Mongoose | 2010 | **9.10.0** | 6 (bundles the driver) | small | Medium — the schema layer is easy, the query semantics are not | Most material predates the Mongoose 9 hook changes |
 | Drizzle | 2022 | **0.45.2** | **0** | negligible | Low **if you know SQL**, high if you do not | The site documents the **1.0 RC**; `defineRelations` will not compile on 0.45.2 |
 | Raw drivers | `pg` since 2010 | `pg` **8.23.0** | few | negligible | Low, and it is SQL you already know | None — but nothing tells you when a query is wrong |
 

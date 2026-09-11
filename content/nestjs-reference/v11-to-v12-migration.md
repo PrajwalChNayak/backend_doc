@@ -10,7 +10,7 @@ NestJS 12 is the current line: `@nestjs/core` and `@nestjs/common` are **12.0.1*
 This page and the two beside it are the only places on the site where NestJS 11 idioms appear. Every "before" snippet below is inside a `:::legacy` or `:::deprecated` callout; none of it runs on Nest 12.
 
 :::note
-Facts on this page were verified on 2026-09-09 against the published type declarations and JavaScript inside `@nestjs/common@12.0.1`, `@nestjs/core@12.0.1`, `@nestjs/platform-express@12.0.1`, `@nestjs/config@12.0.0`, `@nestjs/microservices@12.0.1`, `@nestjs/apollo@14.0.0`, `@nestjs/cli@12.0.0` and `@nestjs/schematics@12.0.0` — unpacked from the registry and read directly, not taken from release notes.
+Facts on this page were verified on 2026-09-09 against the published type declarations and JavaScript inside `@nestjs/common@12.0.1`, `@nestjs/core@12.0.1`, `@nestjs/platform-express@12.0.1`, `@nestjs/config@12.0.0`, `@nestjs/microservices@12.0.1`, `@nestjs/apollo@14.0.0`, `@nestjs/cli@12.0.0` and `@nestjs/schematics@12.0.1` — unpacked from the registry and read directly, not taken from release notes.
 :::
 
 ## Before you start
@@ -20,7 +20,7 @@ Facts on this page were verified on 2026-09-09 against the published type declar
 | `@nestjs/core`, `@nestjs/common` | **12.0.1**, `"type": "module"` |
 | `@nestjs/platform-express` | 12.0.1 — bundles `express` 5.2.1, `multer` 2.2.0, `cors` 2.8.6, `path-to-regexp` 8.4.2 |
 | `@nestjs/cli` | **12.0.0** (`engines.node: ">= 20.11"`) |
-| `@nestjs/schematics` | **12.0.0** (`engines.node: ">=22.12.0"`) |
+| `@nestjs/schematics` | **12.0.1** (`engines.node: ">=22.12.0"`) |
 | Node to **run** a Nest 12 app | **v20.19+, v22.12+, or v26+** |
 | Node to **use the CLI** | **v22.22.3+, v24.15+, or v26+** |
 | Node this handbook targets | **24 LTS** — satisfies both |
@@ -107,7 +107,7 @@ Do not bundle an ESM migration into the version bump. Upgrade to 12 on CommonJS,
 
 ## Standard Schema validation and serialization
 
-Nest 12 adds first-class support for the [Standard Schema](https://standardschema.dev/) spec, so Zod 4.5.4, Valibot 1.4.2 and ArkType 2.2.3 all work through one built-in pipe instead of a hand-written one. `class-validator` is unchanged and is not deprecated — this is a second option, not a replacement.
+Nest 12 adds first-class support for the [Standard Schema](https://standardschema.dev/) spec, so Zod 4.6.2, Valibot 1.4.2 and ArkType 2.2.3 all work through one built-in pipe instead of a hand-written one. `class-validator` is unchanged and is not deprecated — this is a second option, not a replacement.
 
 The v11 way was your own pipe:
 
@@ -646,7 +646,7 @@ npx tsc --noEmit                        # the type gate you still owe
 
 ### `nest new` now asks about the module format
 
-`@nestjs/schematics@12.0.0` prompts *"Which module system would you like to use?"* with two choices — **ESM (with Vitest)** and **CJS (with Jest)** — and the schema's default is `esm`. The generated ESM project ships `"type": "module"`, a `nodenext` tsconfig with `resolvePackageJsonExports: true`, `vitest` scripts and **oxlint** in place of ESLint.
+`@nestjs/schematics@12.0.1` prompts *"Which module system would you like to use?"* with two choices — **ESM (with Vitest)** and **CJS (with Jest)** — and the schema's default is `esm`. The generated ESM project ships `"type": "module"`, a `nodenext` tsconfig with `resolvePackageJsonExports: true`, `vitest` scripts and **oxlint** in place of ESLint.
 
 Existing applications are unaffected: `nest upgrade` does not change your format, your test runner, or your linter.
 
@@ -666,7 +666,7 @@ If you are crossing the Express 4 → 5 boundary in the same upgrade — which y
 Tick every line before you call the upgrade finished.
 
 - `node -v` is **24 LTS** (or v22.22.3+ / v26+) on your machine, in CI, and in the image.
-- `@nestjs/core`, `@nestjs/common`, `@nestjs/platform-express`, `@nestjs/testing` all resolve to **12.0.1**; `@nestjs/cli` and `@nestjs/schematics` to **12.0.0**.
+- `@nestjs/core`, `@nestjs/common`, `@nestjs/platform-express`, `@nestjs/testing` all resolve to **12.0.1**; `@nestjs/cli` and `@nestjs/schematics` to **12.0.1**.
 - No `package.json` entry asks for `@nestjs/throttler@12`, `@nestjs/graphql@12` or `@nestjs/apollo@12`. Those lines are 6.5.0 and 14.0.0.
 - The application boots with no `path-to-regexp` `TypeError`.
 - Every `onModuleInit` / `onApplicationBootstrap` that depended on another provider's hook now awaits that provider explicitly.

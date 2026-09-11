@@ -17,7 +17,7 @@ The npm `latest` dist-tag for `prisma` points at **`8.0.0-rc.13`**, a release ca
 | --- | --- | --- | --- | --- |
 | `express` | 5.2.1 | The web framework. `body-parser` is bundled. | [Setup and project structure](../express/setup-and-project-structure.md) | [expressjs.com](https://expressjs.com/) |
 | `@types/express` | 5.0.6 | TypeScript types matching Express 5. | [Native TypeScript support](../node/native-typescript-support.md) | [npm](https://www.npmjs.com/package/@types/express) |
-| `compression` | 1.8.1 | gzip/deflate response compression. | [Compression](../express-libraries/compression.md) | [npm](https://www.npmjs.com/package/compression) |
+| `compression` | 1.8.2 | gzip/deflate response compression. | [Compression](../express-libraries/compression.md) | [npm](https://www.npmjs.com/package/compression) |
 | `http-errors` | 2.0.1 | Typed HTTP error objects with a `status`. | [Error handling](../express/error-handling.md) | [npm](https://www.npmjs.com/package/http-errors) |
 | `dotenv` | 17.4.2 | `.env` loading — prefer `node --env-file`. | [Environment variables and config](../node/environment-variables-and-config.md) | [npm](https://www.npmjs.com/package/dotenv) |
 | `undici` | 8.10.2 | The HTTP client behind global `fetch`; use it directly for pools and interceptors. | [Retries and timeouts](../databases/retries-and-timeouts.md) | [undici.nodejs.org](https://undici.nodejs.org/) |
@@ -61,7 +61,7 @@ The npm `latest` dist-tag for `prisma` points at **`8.0.0-rc.13`**, a release ca
 
 | Package | Version | Purpose | On this site | Docs |
 | --- | --- | --- | --- | --- |
-| `zod` | 4.5.4 | Schema validation and inferred types. Zod 4 API: `z.email()`, not `z.string().email()`. | [Validation](../express-libraries/validation.md) | [zod.dev](https://zod.dev/) |
+| `zod` | 4.6.2 | Schema validation and inferred types. Zod 4 API: `z.email()`, not `z.string().email()`. | [Validation](../express-libraries/validation.md) | [zod.dev](https://zod.dev/) |
 | `express-validator` | 7.3.2 | Chainable per-field validators as middleware. | [Validation](../express-libraries/validation.md) | [express-validator](https://express-validator.github.io/docs/) |
 
 ## Logging and observability
@@ -71,7 +71,7 @@ The npm `latest` dist-tag for `prisma` points at **`8.0.0-rc.13`**, a release ca
 | `pino` | 10.3.1 | Fast structured JSON logger. | [Logging](../express-libraries/logging.md) | [getpino.io](https://getpino.io/) |
 | `pino-http` | 11.0.0 | Request logging middleware for pino. | [Logging](../express-libraries/logging.md) | [npm](https://www.npmjs.com/package/pino-http) |
 | `pino-pretty` | 13.1.3 | Human-readable dev output. **Dev dependency only.** | [Logging](../express-libraries/logging.md) | [npm](https://www.npmjs.com/package/pino-pretty) |
-| `morgan` | 1.12.0 | Apache-style request logs. Simpler, unstructured. | [Logging](../express-libraries/logging.md) | [npm](https://www.npmjs.com/package/morgan) |
+| `morgan` | 1.12.1 | Apache-style request logs. Simpler, unstructured. | [Logging](../express-libraries/logging.md) | [npm](https://www.npmjs.com/package/morgan) |
 | `winston` | 3.19.0 | Transport-oriented logger. | [Logging](../express-libraries/logging.md) | [winston](https://github.com/winstonjs/winston) |
 
 ## Uploads and files
@@ -79,9 +79,9 @@ The npm `latest` dist-tag for `prisma` points at **`8.0.0-rc.13`**, a release ca
 | Package | Version | Purpose | On this site | Docs |
 | --- | --- | --- | --- | --- |
 | `multer` | 2.3.0 | `multipart/form-data` parsing. **1.x is deprecated — see below.** | [File uploads](../express-libraries/file-uploads.md) | [npm](https://www.npmjs.com/package/multer) |
-| `file-type` | 22.0.2 | Magic-byte content sniffing — never trust the declared MIME type. ESM-only. | [File upload security](../security/file-upload-security.md) | [npm](https://www.npmjs.com/package/file-type) |
+| `file-type` | 22.1.0 | Magic-byte content sniffing — never trust the declared MIME type. ESM-only. | [File upload security](../security/file-upload-security.md) | [npm](https://www.npmjs.com/package/file-type) |
 | `sharp` | 0.35.4 | Image re-encoding, which also strips malicious payloads. | [File upload security](../security/file-upload-security.md) | [sharp.pixelplumbing.com](https://sharp.pixelplumbing.com/) |
-| `@aws-sdk/client-s3` | 3.1128.0 | S3 storage and presigned URLs. | [File uploads](../express-libraries/file-uploads.md) | [AWS SDK for JavaScript](https://docs.aws.amazon.com/sdk-for-javascript/) |
+| `@aws-sdk/client-s3` | 3.1130.0 | S3 storage and presigned URLs. | [File uploads](../express-libraries/file-uploads.md) | [AWS SDK for JavaScript](https://docs.aws.amazon.com/sdk-for-javascript/) |
 
 ## Testing
 
@@ -126,7 +126,7 @@ The npm `latest` dist-tag for `prisma` points at **`8.0.0-rc.13`**, a release ca
 | `typeorm` | 1.1.1 | 1.1.1 | Decorator/DataMapper ORM. It reached 1.0 — do not write `0.3.x`. | [TypeORM](../orms/typeorm.md) | [typeorm.io](https://typeorm.io/) |
 | `sequelize` | 6.37.8 | 6.37.8 | Mature Active Record ORM. v7 is still alpha. | [Sequelize](../orms/sequelize.md) | [sequelize.org](https://sequelize.org/) |
 | `sequelize-cli` | 6.6.5 | 6.6.5 | Sequelize migrations and seeders. | [Migrations](../databases/migrations.md) | [npm](https://www.npmjs.com/package/sequelize-cli) |
-| `mongoose` | 9.9.5 | 9.9.5 | MongoDB ODM with schemas. | [Mongoose](../orms/mongoose.md) | [mongoosejs.com](https://mongoosejs.com/) |
+| `mongoose` | 9.10.0 | 9.10.0 | MongoDB ODM with schemas. | [Mongoose](../orms/mongoose.md) | [mongoosejs.com](https://mongoosejs.com/) |
 | `knex` | 3.3.0 | 3.3.0 | Query builder and migration runner. | [Knex](../orms/knex.md) | [knexjs.org](https://knexjs.org/) |
 | `kysely` | 0.29.5 | 0.29.5 | Type-safe query builder. Mentioned for comparison only. | [Comparison table](../orms/comparison.md) | [kysely.dev](https://kysely.dev/) |
 | `objection` | 3.1.5 | 3.1.5 | ORM on top of Knex. Low activity; comparison only. | [Comparison table](../orms/comparison.md) | [objection.js](https://vincit.github.io/objection.js/) |

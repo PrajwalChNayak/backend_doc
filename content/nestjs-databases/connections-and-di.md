@@ -132,7 +132,7 @@ The repository provider is exported by the dynamic module that `forFeature` retu
 Same shape, different package.
 
 ```bash
-npm install @nestjs/mongoose@12.0.0 mongoose@9.9.5
+npm install @nestjs/mongoose@12.0.0 mongoose@9.10.0
 ```
 
 ```ts title="src/database/mongo.module.ts"

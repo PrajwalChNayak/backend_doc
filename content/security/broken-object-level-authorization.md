@@ -116,7 +116,7 @@ const order = await prisma.order.findFirst({
 // Sequelize 6.37.8
 const order = await Order.findOne({ where: { id, userId: req.user.id } })
 
-// Mongoose 9.9.5
+// Mongoose 9.10.0
 const order = await Order.findOne({ _id: id, userId: req.user.id })
 ```
 

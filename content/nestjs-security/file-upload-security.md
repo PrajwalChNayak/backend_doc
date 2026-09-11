@@ -18,7 +18,7 @@ The attack mechanics — decompression bombs, SVG as an XSS vector, SSRF through
   "path-to-regexp": "8.4.2", "tslib": "2.8.1" } }
 ```
 
-`@nestjs/common@12.0.1` additionally depends on **`file-type@22.0.2`**, which is what lets the built-in `FileTypeValidator` inspect magic numbers instead of trusting the client.
+`@nestjs/common@12.0.1` additionally depends on **`file-type@22.1.0`**, which is what lets the built-in `FileTypeValidator` inspect magic numbers instead of trusting the client.
 
 :::deprecated multer 1.x is end of life
 `multer@1.4.5-lts.2` carries this npm deprecation notice verbatim:
@@ -177,35 +177,36 @@ Two things about that pairing:
 - **`limits.fileSize` is the one that matters.** It aborts the stream while the bytes are arriving, so the oversized file is never fully buffered. `MaxFileSizeValidator` runs *after* parsing, so on its own it rejects a file you have already paid to receive. Set both, to the same number.
 - **`MaxFileSizeValidator` is strictly less than.** A file of exactly `maxSize` bytes fails. Size the constant with that in mind, and keep it identical to `limits.fileSize` so the two cannot disagree.
 
-Map multer's abort into a proper response, because the raw error is a 500:
+You do not need an exception filter for the limits themselves. Nest's interceptors pass every multer failure through `transformException` first, which maps them for you:
 
-```ts good title="src/uploads/multer-exception.filter.ts"
-import { ArgumentsHost, Catch, HttpStatus, PayloadTooLargeException } from '@nestjs/common'
-import type { ExceptionFilter } from '@nestjs/common'
-import { BaseExceptionFilter } from '@nestjs/core'
-import { MulterError } from 'multer'
+| multer failure | What the client gets |
+| --- | --- |
+| `LIMIT_FILE_SIZE` | **413** `PayloadTooLargeException` — "File too large" |
+| `LIMIT_FILE_COUNT`, `LIMIT_PART_COUNT`, `LIMIT_FIELD_COUNT`, `LIMIT_FIELD_KEY`, `LIMIT_FIELD_VALUE`, `LIMIT_FIELD_NESTING`, `LIMIT_UNEXPECTED_FILE`, `MISSING_FIELD_NAME` | **400**, with ` - <field>` appended when multer names the field |
+| Busboy-level failures — a missing boundary, a malformed part header, a truncated form | **400** |
 
-const STATUS: Record<string, number> = {
-  LIMIT_FILE_SIZE: HttpStatus.PAYLOAD_TOO_LARGE,
-  LIMIT_FILE_COUNT: HttpStatus.BAD_REQUEST,
-  LIMIT_PART_COUNT: HttpStatus.BAD_REQUEST,
-  LIMIT_FIELD_COUNT: HttpStatus.BAD_REQUEST,
-  LIMIT_FIELD_VALUE: HttpStatus.BAD_REQUEST,
-  LIMIT_FIELD_KEY: HttpStatus.BAD_REQUEST,
-  LIMIT_UNEXPECTED_FILE: HttpStatus.BAD_REQUEST,
-  LIMIT_FIELD_NESTING: HttpStatus.BAD_REQUEST,
-}
+:::warning The mapping is by message, not by code
+`transformException` switches on `error.message` against a fixed table of multer's own strings. An error raised anywhere else in the upload path — your `fileFilter`, a custom storage engine, a stream error — does not match any of them and reaches the client as a **500**.
 
-@Catch(MulterError)
-export class MulterExceptionFilter extends BaseExceptionFilter implements ExceptionFilter {
-  catch(exception: MulterError, host: ArgumentsHost) {
-    const status = STATUS[exception.code] ?? HttpStatus.BAD_REQUEST
-    const response = host.switchToHttp().getResponse()
-    // The code is safe to return; it tells a legitimate client what to fix.
-    response.status(status).json({ statusCode: status, message: exception.message, code: exception.code })
-  }
-}
+So make `fileFilter` throw a Nest exception rather than a plain `Error`. `transformException` returns an `HttpException` untouched:
+
+```ts good title="src/uploads/uploads.controller.ts"
+FileInterceptor('file', {
+  storage: memoryStorage(),
+  limits: { fileSize: MAX_BYTES, files: 1 },
+  fileFilter: (_request, file, callback) => {
+    // A plain Error here would be a 500. An HttpException survives
+    // transformException unchanged and reaches the client as a 415.
+    if (!/^image\/(png|jpeg|webp)$/.test(file.mimetype)) {
+      return callback(new UnsupportedMediaTypeException('Unsupported file type'), false)
+    }
+    callback(null, true)
+  },
+})
 ```
+
+`fileFilter` sees only the client's declared `mimetype`, so it is a cheap early reject that saves you reading the body — never the content check. That is still `FileTypeValidator`'s job, after the bytes have arrived.
+:::
 
 ### How to verify
 
@@ -661,7 +662,7 @@ describe('upload validation', () => {
 
   it('rejects a non-image announced as an image', () =>
     post()
-      .attach('file', Buffer.from('MZ '), {
+      .attach('file', Buffer.from([0x4d, 0x5a, 0x90, 0x00]), {
         filename: 'avatar.png',
         contentType: 'image/png',
       })
@@ -724,6 +725,7 @@ The SVG case and the filename case are the two that get quietly broken by a well
 - **Any `multer@1.x` in the tree.** End of life with known advisories; `npm ls multer` must show 2.x.
 - **No `limits` object at all.** `fileSize`, `files`, `fields`, `parts` and `fieldNestingDepth` all default to Infinity.
 - **Relying on `MaxFileSizeValidator` alone.** It runs after parsing, so you have already buffered the file you are about to reject.
+- **Throwing a plain `Error` from `fileFilter`.** Nest maps multer's own messages and nothing else, so yours reaches the client as a 500.
 - **`maxSize` and `limits.fileSize` set to different numbers.** One of the two is then decorative, and `MaxFileSizeValidator` is strictly less than.
 - **Omitting `maxCount` on a `FileFieldsInterceptor` field.** That field is unbounded.
 - **`ParseFilePipe` with `FileFieldsInterceptor`.** The field map goes whole to each validator, so every request fails. Validate per field.
@@ -745,7 +747,7 @@ The SVG case and the filename case are the two that get quietly broken by a well
 - [File upload security](../security/file-upload-security.md) — decompression bombs, SSRF through upload-from-URL, and the stored-XSS mechanics.
 - [File uploads](../nestjs-request-handling/file-uploads.md) — the four interceptors, multer options and `ParseFilePipeBuilder` in full.
 - [Pipes](../nestjs-request-handling/pipes.md) — where `ParseFilePipe` sits among the built-in pipes.
-- [Exception filters](../nestjs-request-handling/exception-filters.md) — mapping `MulterError` to a status code.
+- [Exception filters](../nestjs-request-handling/exception-filters.md) — what happens to an error raised outside multer's own limit table.
 - [Authorization and IDOR](authorization-and-idor.md) — the ownership check the download route needs.
 - [Security headers](security-headers.md) — `nosniff`, CSP and why they matter on a download response.
 - [Rate limiting and abuse](rate-limiting.md) — per-route budgets and byte quotas for upload endpoints.

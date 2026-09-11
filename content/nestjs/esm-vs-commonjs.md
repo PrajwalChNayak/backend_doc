@@ -22,7 +22,7 @@ The headline change in the NestJS 12 line is that `@nestjs/core` and `@nestjs/co
 The Node-level mechanics — the resolution algorithm, `exports` maps, dual-package hazards, why `require(esm)` works and when it does not — are covered once in [ESM vs CommonJS](../node/esm-vs-commonjs.md). Read that page for the platform behavior; this one covers what Nest adds.
 
 :::note
-Running a Nest 12 app needs Node **v20.19+, v22.12+, or v26+**, which are the versions where `require(esm)` is available. The CLI needs more: **v22.22.3+, v24.15+, or v26+**, because `@nestjs/schematics@12.0.0` declares `>=22.12.0`. This handbook targets Node 24 LTS, which satisfies both.
+Running a Nest 12 app needs Node **v20.19+, v22.12+, or v26+**, which are the versions where `require(esm)` is available. The CLI needs more: **v22.22.3+, v24.15+, or v26+**, because `@nestjs/schematics@12.0.1` declares `>=22.12.0`. This handbook targets Node 24 LTS, which satisfies both.
 :::
 
 ## Staying on CommonJS

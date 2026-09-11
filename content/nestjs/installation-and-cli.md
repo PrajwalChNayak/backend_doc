@@ -14,7 +14,7 @@ Two different floors apply, and they are not the same number.
 | To do this | Needs Node | Why |
 | --- | --- | --- |
 | **Run** a Nest 12 app | v20.19+, v22.12+, or v26+ | `@nestjs/core@12.0.1` declares `engines.node: ">= 20"`, and the ESM packages need a runtime with `require(esm)` |
-| **Use the CLI** — `nest new`, `nest generate`, `nest build`, `nest upgrade` | **v22.22.3+, v24.15+, or v26+** | `@nestjs/schematics@12.0.0` declares `engines.node: ">=22.12.0"` because of the Angular devkit underneath |
+| **Use the CLI** — `nest new`, `nest generate`, `nest build`, `nest upgrade` | **v22.22.3+, v24.15+, or v26+** | `@nestjs/schematics@12.0.1` declares `engines.node: ">=22.12.0"` because of the Angular devkit underneath |
 
 This handbook targets **Node 24 LTS** (24.20.0 at the time of writing), which satisfies both with room to spare. Node 20 is end of life as of 2026-04-30 — do not start there even though `@nestjs/core` still accepts it.
 

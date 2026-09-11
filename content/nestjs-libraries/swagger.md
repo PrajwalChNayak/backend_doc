@@ -17,7 +17,7 @@ Deriving the document from decorators means the two move together. It also means
 npm install @nestjs/swagger@12.0.1
 ```
 
-`@nestjs/swagger` 12.0.1 peers on `@nestjs/common` and `@nestjs/core` `^12.0.0`, plus `class-validator` and `class-transformer`, and declares `engines: ^20.19.0 || >=22.12.0`. It bundles `swagger-ui-dist` 5.32.14, so you do not install the UI separately.
+`@nestjs/swagger` 12.0.1 peers on `@nestjs/common` and `@nestjs/core` `^12.0.0`, plus `class-validator` and `class-transformer`, and declares `engines: ^20.19.0 || >=22.12.0`. It bundles `swagger-ui-dist` 5.32.15, so you do not install the UI separately.
 
 ## Building and serving the document
 
@@ -250,7 +250,7 @@ If you do need it in production — a public API where the docs *are* the produc
 
 **The "Try it out" button issues real requests against whatever `addServer()` names.** If the only server listed is production, somebody reading the docs will eventually `DELETE` something real. List the sandbox server first, or omit production entirely.
 
-**Swagger UI is a bundled third-party asset** — `swagger-ui-dist` 5.32.14 here. It is another dependency in the audit surface of a route you are exposing. See [Dependency auditing](../nestjs-security/dependency-auditing.md).
+**Swagger UI is a bundled third-party asset** — `swagger-ui-dist` 5.32.15 here. It is another dependency in the audit surface of a route you are exposing. See [Dependency auditing](../nestjs-security/dependency-auditing.md).
 
 **The document leaks even without the UI.** `jsonDocumentUrl` is the same information in a more convenient form. Gate the whole feature, not just the HTML page.
 

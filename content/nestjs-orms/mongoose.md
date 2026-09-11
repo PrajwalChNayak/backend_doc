@@ -1,13 +1,13 @@
 ---
 title: Mongoose
-description: Mongoose 9.9.5 with @nestjs/mongoose 12.0.0 — forRootAsync and forFeature, @InjectModel, decorator schemas with SchemaFactory, select:false, populate without N+1, transactions on a replica set, and sanitizeFilter.
+description: Mongoose 9.10.0 with @nestjs/mongoose 12.0.0 — forRootAsync and forFeature, @InjectModel, decorator schemas with SchemaFactory, select:false, populate without N+1, transactions on a replica set, and sanitizeFilter.
 status: current
 updated: 2026-09-11
 ---
 
 `@nestjs/mongoose` is one of the two first-party ORM modules. It registers the Mongoose `Connection` as a provider, turns each schema into an injectable model token, and lets you declare schemas with decorators instead of a `new Schema({...})` literal — so a schema file reads like the rest of a Nest codebase. The library itself is covered in [Mongoose](../orms/mongoose.md), and the connection options and operator-injection threat in depth in [MongoDB](../nestjs-databases/mongodb.md). This page is the ORM-shaped half: schemas, models, relations and the patterns that go wrong.
 
-This page documents **`@nestjs/mongoose` 12.0.0** with **`mongoose` 9.9.5**.
+This page documents **`@nestjs/mongoose` 12.0.0** with **`mongoose` 9.10.0**.
 
 :::warning
 Mongoose 9 removed callback support across the API and changed middleware signatures: **a `pre` hook no longer receives `next`** — hooks are `async` functions or return promises. Most Mongoose material online predates this. If a snippet calls `next()` in a `pre` hook or passes a callback to `save()`, it is Mongoose 7 or earlier.
@@ -39,15 +39,15 @@ What `@nestjs/mongoose` adds on top is the container. The `Connection` becomes a
 :::tabs
 @tab npm
 ```bash
-npm install @nestjs/mongoose@12.0.0 mongoose@9.9.5
+npm install @nestjs/mongoose@12.0.0 mongoose@9.10.0
 ```
 @tab pnpm
 ```bash
-pnpm add @nestjs/mongoose@12.0.0 mongoose@9.9.5
+pnpm add @nestjs/mongoose@12.0.0 mongoose@9.10.0
 ```
 @tab yarn
 ```bash
-yarn add @nestjs/mongoose@12.0.0 mongoose@9.9.5
+yarn add @nestjs/mongoose@12.0.0 mongoose@9.10.0
 ```
 :::
 

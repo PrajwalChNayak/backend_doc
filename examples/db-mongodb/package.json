@@ -13,6 +13,6 @@
   "dependencies": {
     "express": "^5.2.1",
     "mongodb": "^7.6.0",
-    "zod": "^4.5.4"
+    "zod": "^4.6.2"
   }
 }

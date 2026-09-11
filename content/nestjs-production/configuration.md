@@ -69,7 +69,7 @@ import { envSchema } from './config/validation.js'
 export class AppModule {}
 ```
 
-`validationSchema` accepts any [Standard Schema](https://standardschema.dev/) in `@nestjs/config` 12.0.0, so a Zod 4 schema goes in directly with no adapter. Zod is 4.5.4 here and the Zod 4 API is what this handbook uses — `z.url()`, not `z.string().url()`.
+`validationSchema` accepts any [Standard Schema](https://standardschema.dev/) in `@nestjs/config` 12.0.0, so a Zod 4 schema goes in directly with no adapter. Zod is 4.6.2 here and the Zod 4 API is what this handbook uses — `z.url()`, not `z.string().url()`.
 
 Two properties make the failure useful rather than merely loud: every problem is reported at once rather than one per restart, and each one names the variable. A deployer reading that output fixes it in a minute.
 

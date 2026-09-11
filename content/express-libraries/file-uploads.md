@@ -165,7 +165,7 @@ The only signal with any authority is the first few bytes of the file. `file-typ
 npm install file-type@22
 ```
 
-`file-type` 22.0.2 is **ESM-only**. Your project needs `"type": "module"` (or a dynamic `import()`), which is the right default on Node 24 anyway.
+`file-type` 22.1.0 is **ESM-only**. Your project needs `"type": "module"` (or a dynamic `import()`), which is the right default on Node 24 anyway.
 
 ```js title="src/upload/validate.js"
 import { fileTypeFromBuffer } from 'file-type'

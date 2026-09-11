@@ -1,0 +1,43 @@
+// Prisma 7: the `prisma-client` generator writes TypeScript into your project
+// instead of patching node_modules, and the datasource block no longer carries
+// a `url` — the connection string lives in prisma.config.js (CLI) and in the
+// driver adapter (runtime).
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+
+  // These three make the generated code compile cleanly inside a CommonJS
+  // NestJS project: real TypeScript sources, `.js` specifiers in the imports
+  // (TypeScript 7 rejects `.ts` specifiers unless you never emit), and a
+  // CommonJS module format to match this package.
+  generatedFileExtension = "ts"
+  importFileExtension    = "js"
+  moduleFormat           = "cjs"
+  runtime                = "nodejs"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  posts     Post[]
+
+  @@map("users")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String   @default("")
+  userId    Int      @map("user_id")
+  author    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("posts")
+}

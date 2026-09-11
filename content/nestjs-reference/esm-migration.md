@@ -179,10 +179,11 @@ For a dependency that genuinely has no ESM build, `createRequire` is the escape 
 ```ts title="src/legacy/load-cjs-only.ts"
 import { createRequire } from 'node:module'
 
+// `bcrypt` stands in for any dependency that publishes no ESM entry point.
 const require = createRequire(import.meta.url)
-const legacy = require('some-cjs-only-package')
+const bcrypt = require('bcrypt')
 
-export default legacy
+export default bcrypt
 ```
 
 ## Step 5 — everything else in the repository

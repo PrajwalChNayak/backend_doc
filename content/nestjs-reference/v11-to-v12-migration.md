@@ -508,8 +508,8 @@ Never log secrets, tokens or PII into params — they are now part of a structur
 The `nats` package is npm-deprecated with the notice *"Package moved. Use @nats-io/transport-node"*. Nest 12's NATS transport is built against **`@nats-io/transport-node` 3.4.0**.
 
 :::deprecated NestJS 11 — the moved package
-```bash
-npm install nats
+```json title="package.json — the v11 dependency, now dead"
+{ "dependencies": { "nats": "^2.29.3" } }
 ```
 :::
 

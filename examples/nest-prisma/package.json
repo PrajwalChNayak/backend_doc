@@ -1,0 +1,37 @@
+{
+  "name": "nest-prisma",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NestJS 12 with Prisma 7 over SQLite: the PrismaService lifecycle pattern, a driver adapter, relations and an interactive transaction.",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "generate": "prisma generate",
+    "setup": "prisma migrate deploy && prisma generate && npm run build",
+    "seed": "node dist/seed.js",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/core": "^12.0.1",
+    "@nestjs/platform-express": "^12.0.1",
+    "@prisma/adapter-better-sqlite3": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "better-sqlite3": "^13.0.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.2",
+    "prisma": "^7.10.0",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "better-sqlite3": "^13.0.3"
+  }
+}

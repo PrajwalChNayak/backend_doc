@@ -103,7 +103,7 @@ But `tsc` is not what transforms your code under Vitest. Vite is, and **not ever
 
 | Transform | Decorator metadata | Result |
 | --- | --- | --- |
-| Vitest 5.0.0 on **Vite 8** (Oxc) | emitted | test passes |
+| Vitest 5.0.0 on **Vite 8** (Rolldown/Oxc) | emitted | test passes |
 | Vitest 5.0.0 on **Vite 7** (esbuild) | **not emitted** | injected dependency is `undefined` |
 | Vite 7 + `unplugin-swc` | emitted | test passes |
 | Vite 8 with `emitDecoratorMetadata: false` | not emitted | injected dependency is `undefined` |
@@ -306,7 +306,7 @@ Most of a Nest suite is `Test.createTestingModule(...)` and supertest, and none 
 | `rootDir` | `test.root` |
 | `moduleNameMapper` from tsconfig paths | the `vite-tsconfig-paths` plugin |
 | `transform: { '^.+\\.ts$': 'ts-jest' }` | the Vite transform, or `unplugin-swc` |
-| `setupFilesAfterEach` | `test.setupFiles` |
+| `setupFilesAfterEnv` | `test.setupFiles` |
 | `globalSetup` | `test.globalSetup` |
 | `testEnvironment: 'node'` | `test.environment: 'node'` (the default) |
 | `collectCoverageFrom` | `test.coverage.include` |

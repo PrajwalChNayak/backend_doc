@@ -17,7 +17,7 @@ An upload endpoint lets an anonymous caller write bytes to your infrastructure a
 Nest 12 pins 2.2.0, so a fresh project is fine. Run `npm ls multer` anyway — a transitive 1.x from some other package is the case that bites, and the advisories apply to it just the same.
 :::
 
-Nest also depends on **`file-type@22.1.0`** in `@nestjs/common@12.0.1`, which is what makes the built-in `FileTypeValidator` able to check magic numbers rather than trusting the client. That is new enough to be worth saying out loud: in Nest 12 the built-in type validator is a real content check by default.
+Nest also depends on **`file-type@22.0.2`** in `@nestjs/common@12.0.1`, which is what makes the built-in `FileTypeValidator` able to check magic numbers rather than trusting the client. That is new enough to be worth saying out loud: in Nest 12 the built-in type validator is a real content check by default.
 
 :::note
 `multer@2.2.0` ships no type declarations, so the `Express.Multer.File` type used throughout this page needs the ambient definitions:

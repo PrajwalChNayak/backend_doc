@@ -1,0 +1,33 @@
+{
+  "port": 3037,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/uploads", "expect": 200 },
+    { "method": "GET", "path": "/uploads/usage", "expect": 200 },
+    {
+      "method": "POST",
+      "path": "/uploads",
+      "headers": { "content-type": "multipart/form-data; boundary=smokeboundary" },
+      "body": "--smokeboundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"tiny.gif\"\r\nContent-Type: image/gif\r\n\r\nGIF89a0123456789\r\n--smokeboundary--\r\n",
+      "expect": 201
+    },
+    {
+      "method": "POST",
+      "path": "/uploads",
+      "headers": { "content-type": "multipart/form-data; boundary=smokeboundary" },
+      "body": "--smokeboundary\r\nContent-Disposition: form-data; name=\"file\"; filename=\"notes.png\"\r\nContent-Type: image/png\r\n\r\nhello world, not an image\r\n--smokeboundary--\r\n",
+      "expect": 422
+    },
+    {
+      "method": "POST",
+      "path": "/uploads",
+      "headers": { "content-type": "multipart/form-data; boundary=smokeboundary" },
+      "body": "--smokeboundary\r\nContent-Disposition: form-data; name=\"avatar\"; filename=\"tiny.gif\"\r\nContent-Type: image/gif\r\n\r\nGIF89a0123456789\r\n--smokeboundary--\r\n",
+      "expect": 400
+    },
+    { "method": "GET", "path": "/uploads/not-a-uuid", "expect": 400 },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}

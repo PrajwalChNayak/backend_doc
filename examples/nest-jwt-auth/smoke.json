@@ -1,0 +1,16 @@
+{
+  "port": 3036,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "POST", "path": "/auth/login", "body": { "username": "alice", "password": "correct-horse-battery-staple" }, "expect": 200 },
+    { "method": "POST", "path": "/auth/login", "body": { "username": "alice", "password": "nope" }, "expect": 401 },
+    { "method": "POST", "path": "/auth/login", "body": { "username": "nobody", "password": "nope" }, "expect": 401 },
+    { "method": "POST", "path": "/auth/login", "body": { "username": "alice" }, "expect": 400 },
+    { "method": "GET", "path": "/auth/me", "expect": 401 },
+    { "method": "GET", "path": "/auth/me", "headers": { "authorization": "Bearer not.a.token" }, "expect": 401 },
+    { "method": "GET", "path": "/admin/stats", "expect": 401 },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}

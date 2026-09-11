@@ -192,7 +192,7 @@ Exit code non-zero, no listener opened, the orchestrator's readiness probe never
 
 ### With Joi v18
 
-Joi **18.2.8** implements Standard Schema too, so it also goes straight into `validationSchema`. What moved in v12 is where its library-specific settings live:
+Joi **18.2.9** implements Standard Schema too, so it also goes straight into `validationSchema`. What moved in v12 is where its library-specific settings live:
 
 ```ts good title="src/app.module.ts"
 import { Module } from '@nestjs/common'

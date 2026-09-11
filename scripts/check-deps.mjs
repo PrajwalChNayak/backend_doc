@@ -98,6 +98,27 @@ const DELIBERATE_PINS = new Map([
     'Matched to the Node 24 LTS line this handbook targets, not the newest ' +
       'published major.',
   ],
+  [
+    '@aws-sdk/client-s3',
+    'The AWS SDK publishes a new patch most days, so any version written down ' +
+      'is stale within a day. The docs quote a known-good release rather than ' +
+      'pretending to track it.',
+  ],
+  [
+    '@aws-sdk/client-secrets-manager',
+    'Same as @aws-sdk/client-s3 — published most days; a quoted known-good ' +
+      'release, not a tracked one.',
+  ],
+  [
+    'swagger-ui-dist',
+    '5.32.14 is the version @nestjs/swagger@12.0.1 bundles. This is a fact ' +
+      'about that release, not a recommendation, so it does not track npm.',
+  ],
+  [
+    'file-type',
+    'The Nest pages state 22.0.2 because that is what @nestjs/common@12.0.1 ' +
+      'depends on. Pages recommending a direct install use the current 22.1.0.',
+  ],
 ])
 
 /** Flags that consume the next token, so it is an argument and not a package. */

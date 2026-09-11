@@ -18,7 +18,7 @@ The attack mechanics — decompression bombs, SVG as an XSS vector, SSRF through
   "path-to-regexp": "8.4.2", "tslib": "2.8.1" } }
 ```
 
-`@nestjs/common@12.0.1` additionally depends on **`file-type@22.1.0`**, which is what lets the built-in `FileTypeValidator` inspect magic numbers instead of trusting the client.
+`@nestjs/common@12.0.1` additionally depends on **`file-type@22.0.2`**, which is what lets the built-in `FileTypeValidator` inspect magic numbers instead of trusting the client.
 
 :::deprecated multer 1.x is end of life
 `multer@1.4.5-lts.2` carries this npm deprecation notice verbatim:

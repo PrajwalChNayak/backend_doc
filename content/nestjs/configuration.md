@@ -211,7 +211,7 @@ Zod is **4.6.2** here and the Zod 4 API is what this handbook uses — `z.url()`
 
 ### Joi v18
 
-Joi (**18.2.8**) implements Standard Schema too, so it also goes straight into `validationSchema`. What changed is where its library-specific settings live: they now nest under **`validationOptions.libraryOptions`**.
+Joi (**18.2.9**) implements Standard Schema too, so it also goes straight into `validationSchema`. What changed is where its library-specific settings live: they now nest under **`validationOptions.libraryOptions`**.
 
 ```ts title="src/app.module.ts"
 import { Module } from '@nestjs/common'

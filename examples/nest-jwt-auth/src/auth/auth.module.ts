@@ -24,6 +24,14 @@ import { JwtStrategy } from './jwt.strategy.js'
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [AuthService],
+  // PassportModule has to be re-exported, not just imported. `JwtAuthGuard`
+  // extends `AuthGuard('jwt')`, which injects `AuthModuleOptions` — a provider
+  // that lives in PassportModule. Any module whose controllers use the guard
+  // needs it in scope, and AdminController lives in AppModule. Without this
+  // line Nest fails at boot with:
+  //   "Nest can't resolve dependencies of the JwtAuthGuard (?).
+  //    Please make sure that the argument AuthModuleOptions at index [0]
+  //    is available in the AppModule module."
+  exports: [AuthService, PassportModule],
 })
 export class AuthModule {}

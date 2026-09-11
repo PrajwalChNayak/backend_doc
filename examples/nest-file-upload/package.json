@@ -1,0 +1,33 @@
+{
+  "name": "nest-file-upload",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NestJS 12 file uploads: FileInterceptor with every multer 2 limit set, ParseFilePipe with MaxFileSizeValidator and a custom magic-byte FileValidator, UUID filenames and storage outside any static root.",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "setup": "npm run build",
+    "start": "node dist/main.js",
+    "test": "node --test",
+    "dev": "tsc -p tsconfig.json --watch"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/core": "^12.0.1",
+    "@nestjs/platform-express": "^12.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.2.0",
+    "@types/node": "^24.13.4",
+    "supertest": "^7.2.2",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "multer": "^2.3.0"
+  }
+}

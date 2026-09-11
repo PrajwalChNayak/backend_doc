@@ -356,15 +356,21 @@ Three details that matter:
 The same shape works in TypeORM and Prisma. TypeORM's `.orderBy(column, direction)` interpolates the column into the compiled SQL, so it needs the allow-list just as much as a string template does:
 
 ```ts good title="src/reports/reports.repository.ts (TypeORM)"
+// Module scope: the only columns this endpoint will ever sort by.
 const SORTABLE = new Set(['id', 'email', 'createdAt'])
 
-list(sort: string, dir: 'ASC' | 'DESC') {
-  if (!SORTABLE.has(sort)) throw new BadRequestException('Unsortable column')
-  return this.repo
-    .createQueryBuilder('u')
-    .orderBy(`u.${sort}`, dir === 'DESC' ? 'DESC' : 'ASC')
-    .limit(100)
-    .getMany()
+@Injectable()
+export class ReportsRepository {
+  constructor(@InjectRepository(User) private readonly repo: Repository<User>) {}
+
+  list(sort: string, dir: 'ASC' | 'DESC') {
+    if (!SORTABLE.has(sort)) throw new BadRequestException('Unsortable column')
+    return this.repo
+      .createQueryBuilder('u')
+      .orderBy(`u.${sort}`, dir === 'DESC' ? 'DESC' : 'ASC')
+      .limit(100)
+      .getMany()
+  }
 }
 ```
 
@@ -373,16 +379,22 @@ And in Prisma, the allow-list is what makes `Prisma.raw` defensible — it is th
 ```ts good title="src/reports/reports.repository.ts (Prisma)"
 import { Prisma } from '@prisma/client'
 
+// Module scope: Prisma.raw is called here, over literals you typed.
 const SORTABLE = new Map([
   ['email', Prisma.raw('email')],
   ['created_at', Prisma.raw('created_at')],
 ])
 
-list(sort: string, limit: number) {
-  const column = SORTABLE.get(sort)
-  if (!column) throw new BadRequestException('Unsortable column')
-  // lint-sql:allow `column` is a pre-built Prisma.raw fragment from a fixed Map, not user input
-  return this.prisma.$queryRaw`SELECT id, email FROM users ORDER BY ${column} LIMIT ${Math.min(limit, 100)}`
+@Injectable()
+export class ReportsRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  list(sort: string, limit: number) {
+    const column = SORTABLE.get(sort)
+    if (!column) throw new BadRequestException('Unsortable column')
+    // lint-sql:allow `column` is a pre-built Prisma.raw fragment from a fixed Map, not user input
+    return this.prisma.$queryRaw`SELECT id, email FROM users ORDER BY ${column} LIMIT ${Math.min(limit, 100)}`
+  }
 }
 ```
 

@@ -8,39 +8,79 @@ research. Say "resume" and work continues from **Step 1** below.
 
 ## Current state in one line
 
-**42 of 113** NestJS pages written; 4 sections complete. The existing
-Node/Express site (93 pages) is untouched and still builds.
+**74 of 113** NestJS pages written. Five sections complete, three partial, four
+not started. The existing Node/Express site (93 pages) is untouched and still
+builds. Everything written is structurally complete — **no half-finished files**.
 
-Last updated 2026-09-11. Sections done: Fundamentals (12/12), Request Handling
-(9/9), Validation (7/7), Databases (13/13). In flight: ORMs, Libraries,
-Advanced, Security.
+Paused 2026-09-11 at the user's request ("stop it, I will let you know when to
+finish"). Say **resume** / **finish** to continue from Step 1.
+
+### Section status
+
+| Section | Pages | State |
+| --- | --- | --- |
+| `nestjs` (Fundamentals) | 12/12 | complete |
+| `nestjs-request-handling` | 9/9 | complete |
+| `nestjs-validation` | 7/7 | complete |
+| `nestjs-databases` | 13/13 | complete |
+| `nestjs-orms` | 9/9 | complete |
+| `nestjs-libraries` | 9/11 | **missing: logging, observe** |
+| `nestjs-advanced` | 7/9 | **missing: 2 — diff nav.mjs against the directory** |
+| `nestjs-security` | 8/15 | **missing: 7 — diff nav.mjs against the directory** |
+| `nestjs-testing` | 0/7 | not started |
+| `nestjs-production` | 0/11 | not started |
+| `express-vs-nestjs` | 0/4 | not started |
+| `nestjs-reference` | 0/6 | not started |
+
+To list exactly what is missing:
+
+```bash
+node -e "const fs=require('fs');import('./scripts/nav.mjs').then(({sections})=>{for(const s of sections.filter(x=>x.group==='nestjs'))for(const p of s.pages){const f='content/'+s.id+'/'+p.slug+'.md';if(!fs.existsSync(f))console.log(f)}})"
+```
+
+### Validators — all green on the content that exists
+
+Run `lint-snippets.mjs` with **Node 24**; it exits non-zero on an older Node
+rather than silently skipping TypeScript.
+
+```
+lint-snippets   832 ts + 881 js blocks, 0 syntax failures
+lint-sql        0 violations, 27 marked-exempt demonstrations
+check           2848 links resolved, 0 warnings
+                15 errors -- all "listed in nav.mjs but the file does not exist"
+                for the 39 unwritten pages. That error list IS the TODO list.
+```
 
 ### Corrections found by reading the shipped packages
 
 | Claim | Reality |
 | --- | --- |
-| `errorCode` shows up in the error response | **No.** `createBody()` accepts it as a 4th argument but no built-in subclass passes it, and `BaseExceptionFilter` never reads it. It sets `exception.errorCode` and nothing else. Recorded in CONTRIBUTING §11.4. |
+| `errorCode` shows up in the error response | **No.** `createBody()` takes it as a 4th argument but no built-in subclass passes it, and `BaseExceptionFilter` never reads it. Setting it is a silent no-op. Recorded in CONTRIBUTING §11.4. |
 | `@nestjs/throttler` is 12.x | **6.5.0** |
 | `@nestjs/graphql` / `@nestjs/apollo` are 12.x | **14.0.0** |
 | `@nestjs/observe` is a first-class SDK | **0.1.8**, pre-1.0 |
 | Terminus ships a Redis health indicator | It does not, in 12.0.0 |
+| `ValidationPipeOptions` had no `errorFormat` | It does — `'grouped'` changes `message` from `string[]` to `Record<string, string[]>` and breaks filters that assume an array |
 
-### Validator fixes made this pass
+### Four bugs fixed in this repo's own tooling
 
-`lint-snippets.mjs` had three real gaps, all found by running it against the new
-TypeScript content:
+All found by running the validators against real TypeScript content:
 
-1. It **silently skipped every `ts` block** on a Node without
-   `stripTypeScriptTypes`, printing "0 failures" while checking nothing. It now
-   exits non-zero and says so. **Run it on Node 24.**
+1. `lint-snippets.mjs` **silently skipped every `ts` block** on a Node without
+   `stripTypeScriptTypes`, printing "0 failures" while checking nothing. Now
+   exits non-zero and says so.
 2. Constructor parameter properties — Nest's idiomatic DI form — are rejected by
-   strip-only mode. It now falls back to `transform` mode.
+   strip-only mode. Now falls back to `transform` mode.
 3. A bare decorated method or object literal is legitimate documentation but not
    a standalone program. Both are now classified as fragments.
+4. The fragment wrappers put `import` statements **inside** the generated class
+   body, itself a syntax error — so every "imports + bare method" block was
+   reported broken. The import block is now split off and re-prepended, with
+   multi-line specifier lists tracked. This alone took failures 14 → 3.
 
-`check.mjs` gained the NestJS rules (moved `nats`, `subscriptions-transport-ws`,
-Express 4 paths in Nest decorators, un-nested Joi options) and
-`SECTION_REQUIREMENTS` for the new sections.
+A recurring content shape needs a class wrapper: a module-scope `const`
+(an allow-list `Set`/`Map`) followed by a bare method is not pasteable anywhere,
+so those blocks were rewritten with their surrounding `@Injectable()` class.
 
 ---
 

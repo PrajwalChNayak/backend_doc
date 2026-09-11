@@ -1,0 +1,22 @@
+{
+  "port": 3034,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/ready", "expect": 200 },
+    { "method": "GET", "path": "/users?limit=2", "expect": 200 },
+    { "method": "GET", "path": "/users/1", "expect": 200 },
+    { "method": "GET", "path": "/users/1/posts", "expect": 200 },
+    { "method": "GET", "path": "/users/search?email=ada@example.com", "expect": 200 },
+    { "method": "GET", "path": "/users/search?email=%27%20OR%20%271%27%3D%271", "expect": 200 },
+    { "method": "GET", "path": "/stats/authors?minPosts=1", "expect": 200 },
+    { "method": "GET", "path": "/posts?limit=2", "expect": 200 },
+    { "method": "GET", "path": "/users?sort=nope", "expect": 400 },
+    { "method": "GET", "path": "/users/9999", "expect": 404 },
+    { "method": "POST", "path": "/users", "body": { "email": "smoke-prisma@example.com", "name": "Smoke" }, "expect": [201, 409] },
+    { "method": "POST", "path": "/users", "body": { "email": "ada@example.com", "name": "Dup" }, "expect": 409 },
+    { "method": "POST", "path": "/users-with-posts", "body": { "email": "txp@example.com", "name": "Tx", "posts": [{ "title": "one" }, { "title": "two", "body": "b" }] }, "expect": [201, 409] },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}

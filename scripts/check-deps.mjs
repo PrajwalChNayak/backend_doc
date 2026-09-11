@@ -66,10 +66,21 @@ function packageRoot(specifier) {
 const VALID_NAME = /^(?:@[a-z0-9][\w.-]*\/)?[a-z0-9][\w.-]*$/i
 
 /** Invoked as commands, never listed as a dependency of anything here. */
-const CLI_ONLY = new Set(['npm', 'npx', 'pnpm', 'yarn', 'bun', 'bunx', 'corepack', 'node'])
+const CLI_ONLY = new Set([
+  'npm', 'npx', 'pnpm', 'yarn', 'bun', 'bunx', 'corepack', 'node',
+  // Binaries run through npx that resolve to a DIFFERENT package than their
+  // command name. `npx tsc` runs typescript's binary; the `tsc` package on npm
+  // is a deprecated stub nobody should install.
+  'tsc', 'nest', 'prisma', 'drizzle-kit', 'vitest', 'jest', 'eslint', 'oxlint',
+])
 
 /** Scopes the docs use as deliberate placeholders in examples. */
-const PLACEHOLDER_SCOPES = ['@acme/', '@your-org/', '@example/', '@myorg/', '@company/']
+const PLACEHOLDER_SCOPES = [
+  '@acme/', '@your-org/', '@example/', '@myorg/', '@company/',
+  // A NestJS monorepo maps its own libraries to a tsconfig path alias, by
+  // convention `@app/<library>`. Those are local projects, not npm packages.
+  '@app/',
+]
 
 /** Flags that consume the next token, so it is an argument and not a package. */
 const VALUE_FLAGS = new Set([

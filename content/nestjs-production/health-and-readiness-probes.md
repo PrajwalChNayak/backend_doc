@@ -130,10 +130,17 @@ This is where Nest breaks probes in ways plain Express does not. Everything you 
 | An HTTP access logger | 86,400 identical lines per replica per day | exclude the probe paths from `autoLogging` |
 
 ```ts title="src/main.ts"
-const app = await NestFactory.create(AppModule)
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module.js'
 
-// The probes stay at the root; everything else moves under /api.
-app.setGlobalPrefix('api', { exclude: ['livez', 'readyz'] })
+export async function bootstrap() {
+  const app = await NestFactory.create(AppModule)
+
+  // The probes stay at the root; everything else moves under /api.
+  app.setGlobalPrefix('api', { exclude: ['livez', 'readyz'] })
+
+  await app.listen(3000)
+}
 ```
 
 ```ts title="src/health/health.controller.ts"

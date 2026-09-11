@@ -1,0 +1,14 @@
+{
+  "port": 3035,
+  "entry": "dist/main.js",
+  "requiresService": true,
+  "note": "MongoDB was NOT running when this example was authored (the Docker daemon was unavailable on the machine), so these requests are declared, not observed. Without a server the app exits 1 with the docker hint and the runner reports skipped-no-service. Start `docker run --rm -p 27017:27017 mongo:8` to exercise them.",
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/ready", "expect": [200, 503] },
+    { "method": "GET", "path": "/products", "expect": 200 },
+    { "method": "GET", "path": "/products/search?q=KB-001", "expect": 200 },
+    { "method": "GET", "path": "/products/search", "expect": 400 },
+    { "method": "GET", "path": "/products/not-an-object-id", "expect": 404 }
+  ]
+}

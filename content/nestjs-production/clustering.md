@@ -168,9 +168,21 @@ Nest amplifies the startup half. `NestFactory.create()` reads decorator metadata
 Measure your own baseline rather than trusting a number:
 
 ```ts title="src/main.ts — measure the per-worker cost once"
-await app.listen(port)
-const { rss, heapUsed } = process.memoryUsage()
-Logger.log(`ready rss=${Math.round(rss / 1e6)}MB heap=${Math.round(heapUsed / 1e6)}MB`, 'Bootstrap')
+import { Logger } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module.js'
+
+export async function bootstrap() {
+  const app = await NestFactory.create(AppModule, { forceCloseConnections: true })
+  app.enableShutdownHooks()
+  await app.listen(process.env.PORT ?? 3000)
+
+  const { rss, heapUsed } = process.memoryUsage()
+  Logger.log(
+    `ready rss=${Math.round(rss / 1e6)}MB heap=${Math.round(heapUsed / 1e6)}MB`,
+    'Bootstrap',
+  )
+}
 ```
 
 Then budget from it. Two consequences:

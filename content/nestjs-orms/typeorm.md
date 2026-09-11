@@ -527,21 +527,28 @@ await this.posts.createQueryBuilder('post').orderBy(sort, 'ASC').getMany()
 TypeORM 1.0 added validation of `orderBy` conditions and escapes identifiers across drivers. That blunts the syntax attack; it does not stop a caller sorting by — and inferring the contents of — a column you never meant to expose. Use an allow-list:
 
 ```ts good title="src/posts/posts.service.ts"
+// Module scope: a fixed map from the public sort key to the real column.
 const SORT_COLUMNS = new Map([
   ['created_at', 'post.createdAt'],
   ['title', 'post.title'],
 ])
 
-async list(sort: string, dir: string, limit: number) {
-  const column = SORT_COLUMNS.get(sort)
-  if (!column) throw new BadRequestException('Invalid sort column')
-  const direction = dir === 'asc' ? 'ASC' : 'DESC'
+export class PostsService {
+  constructor(
+    @InjectRepository(Post) private readonly posts: Repository<Post>,
+  ) {}
 
-  return this.posts
-    .createQueryBuilder('post')
-    .orderBy(column, direction)
-    .limit(limit)
-    .getMany()
+  async list(sort: string, dir: string, limit: number) {
+    const column = SORT_COLUMNS.get(sort)
+    if (!column) throw new BadRequestException('Invalid sort column')
+    const direction = dir === 'asc' ? 'ASC' : 'DESC'
+
+    return this.posts
+      .createQueryBuilder('post')
+      .orderBy(column, direction)
+      .limit(limit)
+      .getMany()
+  }
 }
 ```
 
@@ -554,13 +561,19 @@ await this.posts.find({ order: { createdAt: 'DESC' }, take: limit })
 Same rule for a dynamic table name in a raw query: validate against a `Set` you control, and mark the line so the linter knows you did.
 
 ```ts good title="src/reports/reports.service.ts"
+// Module scope: the only table names this endpoint will ever accept.
 const REPORT_TABLES = new Set(['orders_daily', 'orders_monthly'])
 
-async rollup(table: string, limit: number) {
-  if (!REPORT_TABLES.has(table)) throw new BadRequestException('Unknown report')
-  // lint-sql:allow table is checked against the REPORT_TABLES allow-list above
-  const sql = `SELECT bucket, total FROM ${table} ORDER BY bucket DESC LIMIT $1`
-  return this.dataSource.query(sql, [limit])
+@Injectable()
+export class ReportsService {
+  constructor(private readonly dataSource: DataSource) {}
+
+  async rollup(table: string, limit: number) {
+    if (!REPORT_TABLES.has(table)) throw new BadRequestException('Unknown report')
+    // lint-sql:allow table is checked against the REPORT_TABLES allow-list above
+    const sql = `SELECT bucket, total FROM ${table} ORDER BY bucket DESC LIMIT $1`
+    return this.dataSource.query(sql, [limit])
+  }
 }
 ```
 

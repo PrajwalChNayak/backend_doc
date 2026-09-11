@@ -226,6 +226,8 @@ async function main() {
   const syntaxFailures = []
   const fragments = []
   const decoratorBlocks = []
+  const classMemberFragments = []
+  const transformedBlocks = []
   const tsSkipped = []
   const unresolved = new Map()
 
@@ -258,19 +260,61 @@ async function main() {
           tsSkipped.push(`${rel}:${fence.startLine + frontMatterLines}`)
           continue
         }
+        // A NestJS page very often shows a bare decorated method — a class
+        // MEMBER, not a statement — which is legitimate documentation but is
+        // not a standalone TypeScript program. Strip it as written first; if
+        // that fails, retry it wrapped as a class body before calling it broken.
+        let stripped = null
+        let firstError = null
         try {
-          source = nodeModule.stripTypeScriptTypes(source, { mode: 'strip' })
+          stripped = nodeModule.stripTypeScriptTypes(source, { mode: 'strip' })
         } catch (e) {
+          firstError = e
+
+          // `strip` mode refuses syntax that has to EMIT code. The big one for
+          // NestJS is the constructor parameter property —
+          // `constructor(private readonly users: UsersService) {}` — which is
+          // the idiomatic DI form and appears on nearly every service page.
+          // `transform` mode compiles those down, so retry there before
+          // treating the block as a fragment.
+          try {
+            stripped = nodeModule.stripTypeScriptTypes(source, { mode: 'transform' })
+            transformedBlocks.push({ file: rel, line: fence.startLine + frontMatterLines })
+          } catch {
+            stripped = null
+          }
+          // Still failing? Two shapes are legitimate documentation but are not
+          // standalone programs: a class member (a decorated method shown
+          // without its class) and a bare object literal (a provider
+          // definition, an options block).
+          if (stripped === null) {
+            for (const wrap of [
+              (src) => `class __Fragment {\n${src}\n}`,
+              (src) => `void (${src});`,
+            ]) {
+              try {
+                stripped = nodeModule.stripTypeScriptTypes(wrap(source), { mode: 'transform' })
+                classMemberFragments.push({ file: rel, line: fence.startLine + frontMatterLines })
+                break
+              } catch {
+                stripped = null
+              }
+            }
+          }
+        }
+
+        if (stripped === null) {
           syntaxFailures.push({
             file: rel,
             line: fence.startLine + frontMatterLines,
             lang: fence.lang,
             stage: 'type-strip',
-            message: String(e.message).split('\n')[0],
+            message: String(firstError.message).split('\n')[0],
             snippet: source.split('\n')[0].slice(0, 90),
           })
           continue
         }
+        source = stripped
       }
 
       // Parses only. No linker, no evaluation — nothing in the docs runs here.
@@ -313,6 +357,8 @@ async function main() {
   console.log(`  complete modules ${parsed}`)
   console.log(`  valid fragments  ${fragments.length}  (function bodies, options objects, side-by-side alternatives)`)
   console.log(`  decorator blocks ${decoratorBlocks.length}  (valid TypeScript; need tsc, not Node type-stripping)`)
+  console.log(`  class fragments  ${classMemberFragments.length}  (a decorated method shown without its class)`)
+  console.log(`  transform mode   ${transformedBlocks.length}  (constructor parameter properties — Nest's DI form)`)
   console.log(`  syntax failures  ${syntaxFailures.length}`)
   console.log(`  ts skipped       ${tsSkipped.length}${canStripTypes ? '' : ' (this Node cannot strip types — needs 22.13+)'}`)
   console.log(`  packages named   ${installed.size} installed under examples/, ${unresolved.size} referenced but not installed`)
@@ -325,6 +371,18 @@ async function main() {
       const list = [...where]
       console.log(`    · ${spec}  — ${list.length} block(s)${VERBOSE ? ': ' + list.slice(0, 4).join(', ') : ''}`)
     }
+  }
+
+  // A validator that passes because it did not look is worse than no validator.
+  // On a Node without `stripTypeScriptTypes`, every ts block is skipped — which
+  // used to report a cheerful "0 failures" while checking nothing at all.
+  if (tsSkipped.length) {
+    console.log('')
+    console.log(`  ✖ ${tsSkipped.length} TypeScript block(s) were NOT checked.`)
+    console.log(`    This Node (${process.version}) has no module.stripTypeScriptTypes.`)
+    console.log('    Re-run on Node 22.13+ (the site targets Node 24 LTS).')
+    console.log('')
+    process.exit(1)
   }
 
   if (syntaxFailures.length) {

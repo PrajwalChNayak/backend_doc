@@ -43,11 +43,26 @@ const REQUIRED_FRONT_MATTER = ['title', 'description', 'status', 'updated']
 const VALID_STATUS = new Set(['current', 'legacy', 'deprecated'])
 
 /** Sections whose pages must carry these headings. */
+const BOTH = [
+  '## Security considerations',
+  '## Production considerations',
+  '## Common mistakes',
+  '## Related topics',
+]
+const MISTAKES_AND_LINKS = ['## Common mistakes', '## Related topics']
+
 const SECTION_REQUIREMENTS = {
-  security: ['## Common mistakes', '## Related topics'],
-  'express-libraries': ['## Security considerations', '## Production considerations', '## Common mistakes', '## Related topics'],
-  databases: ['## Security considerations', '## Production considerations', '## Common mistakes', '## Related topics'],
-  orms: ['## Security considerations', '## Production considerations', '## Common mistakes', '## Related topics'],
+  // Part 1 — Node and Express
+  security: MISTAKES_AND_LINKS,
+  'express-libraries': BOTH,
+  databases: BOTH,
+  orms: BOTH,
+  // Part 2 — NestJS. The security section is already threat/exploit/fix/verify
+  // end to end, so a separate "Security considerations" heading would be noise.
+  'nestjs-security': MISTAKES_AND_LINKS,
+  'nestjs-libraries': BOTH,
+  'nestjs-databases': BOTH,
+  'nestjs-orms': BOTH,
 }
 const UNIVERSAL_REQUIREMENTS = ['## Common mistakes', '## Related topics']
 

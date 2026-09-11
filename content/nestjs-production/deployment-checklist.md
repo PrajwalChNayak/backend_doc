@@ -120,6 +120,7 @@ Not every item applies to every service. Deciding one does not apply is fine; sk
 - [ ] Every hook is idempotent and catches its own errors, given the v12 hierarchy-level ordering — [Graceful shutdown](graceful-shutdown.md)
 - [ ] No code relies on hook ordering *between* providers within one hook — [NestJS 11 → 12 migration](../nestjs-reference/v11-to-v12-migration.md)
 - [ ] `forceCloseConnections: true` is set, so idle keep-alive sockets cannot hold `app.close()` open — [Graceful shutdown](graceful-shutdown.md)
+- [ ] `return503OnClosing: true` is set, so a request arriving mid-shutdown gets a legible 503 rather than a reset — [Graceful shutdown](graceful-shutdown.md)
 - [ ] `server.keepAliveTimeout` exceeds the proxy's idle timeout, with `headersTimeout` above it — [Graceful shutdown](../production/graceful-shutdown.md)
 - [ ] The total shutdown budget fits inside `terminationGracePeriodSeconds` — [Graceful shutdown](graceful-shutdown.md)
 - [ ] PID 1 is an init or `node` directly — never a shell, npm, or the Nest CLI — [Docker](docker.md)

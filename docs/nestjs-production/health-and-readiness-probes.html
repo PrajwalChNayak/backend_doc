@@ -156,7 +156,9 @@ checks per second        60   ← 20 probe requests/s, each doing 3 round trips<
   <span class="tok-name">controllers</span><span class="tok-operator">:</span> <span class="tok-punct">[</span><span class="tok-class">HealthController</span><span class="tok-punct">]</span><span class="tok-punct">,</span>
 <span class="tok-punct">}</span><span class="tok-punct">)</span>
 <span class="tok-keyword">export</span> <span class="tok-keyword">class</span> <span class="tok-class">HealthModule</span> <span class="tok-punct">{</span><span class="tok-punct">}</span></code></pre></div></figure>
-<p>It does nothing without <code>app.enableShutdownHooks()</code>, because nothing tells Terminus that shutdown has begun. Two configuration values have to agree with it:</p>
+<p>It does nothing without <code>app.enableShutdownHooks()</code>, because nothing tells Terminus that shutdown has begun.</p>
+<p>Pair it with <code>return503OnClosing: true</code> on <code>NestFactory.create()</code>, which makes Nest answer <strong>any</strong> new request during shutdown with a 503 while letting in-flight ones finish. Readiness then fails for two independent reasons — Terminus reporting <code>shutting_down</code>, and the application-level 503 — so a probe cannot accidentally report ready during teardown.</p>
+<p>Two configuration values have to agree with it:</p>
 <ul><li><strong><code>readinessProbe.periodSeconds</code> must be small</strong> — 2 with <code>failureThreshold: 2</code> means the flip is observed in about four seconds. A period of 30 means the flag is noticed long after the socket closed.</li><li><strong><code>gracefulShutdownTimeoutMs</code> + your drain must fit inside <code>terminationGracePeriodSeconds</code>.</strong> Too short and you drop requests; too long and <code>SIGKILL</code> arrives mid-drain anyway.</li></ul>
 <p>The full sequence is in <a href="graceful-shutdown.html">Graceful shutdown</a>.</p>
 <h3 id="shedding-load-with-readiness"><a class="anchor" href="#shedding-load-with-readiness" aria-label="Link to this section">#</a>Shedding load with readiness</h3>

@@ -203,6 +203,30 @@ export class HealthModule {}
 
 `gracefulShutdownTimeoutMs` does nothing without `enableShutdownHooks()`, because nothing tells Terminus that shutdown has begun. The two go together or neither works.
 
+### `return503OnClosing` as a safety net
+
+Nest has its own option for the same window, on `NestApplicationOptions`:
+
+```ts
+const app = await NestFactory.create(AppModule, {
+  forceCloseConnections: true,
+  // New requests arriving during shutdown get an explicit 503.
+  // In-flight requests are still allowed to complete. Default: false.
+  return503OnClosing: true,
+})
+```
+
+It is worth turning on, and it is **not** a replacement for the drain delay. The difference is what a request that arrives at second zero gets:
+
+| | Without a drain delay | With a drain delay |
+| --- | --- | --- |
+| `return503OnClosing: false` | connection refused → the proxy reports **502** | served normally → **200** |
+| `return503OnClosing: true` | an explicit **503** | served normally → **200** |
+
+A 503 is a better failure than a connection reset — it is unambiguous in your logs, and some proxies and service meshes will retry an idempotent request on it. It is still a failed request for any client behind a proxy that does not retry.
+
+So use both: the drain delay is what makes those requests succeed, and `return503OnClosing` is what makes the ones that slip through legible instead of a mystery 502.
+
 If you are not using Terminus, own the signal yourself instead of calling `enableShutdownHooks()`:
 
 ```ts title="src/shutdown.ts"
@@ -344,6 +368,7 @@ That last test is worth more than it looks. A hook that throws — because it cl
 - **A hook that throws.** One failed close aborts the rest of the shutdown and exits non-zero. Catch, log, continue.
 - **A hook that is not idempotent.** `pool.end()` twice throws, and after the v12 ordering change "twice" is easier to reach.
 - **Omitting `forceCloseConnections`.** `app.close()` waits on idle keep-alive sockets forever and every deploy hits the grace period.
+- **Treating `return503OnClosing` as the fix for deploy-time errors.** It makes the failure legible; only the drain delay makes those requests succeed.
 - **`forceCloseConnections` with no drain delay.** You trade a hang for truncated responses.
 - **`keepAliveTimeout` left at Node's 5-second default behind a 60-second proxy.** Random-looking 502s in steady state.
 - **A shutdown budget larger than `terminationGracePeriodSeconds`.** Your timeout never runs; `SIGKILL` does.

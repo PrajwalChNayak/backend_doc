@@ -341,17 +341,28 @@ Two more things to get right:
 
 `@nestjs/observe` is the first-party observability SDK, and it is **0.1.8** — pre-1.0. Treat it accordingly.
 
-Instrumentation is opt-in through the **`instrument` application option**, which lives on `NestApplicationContextOptions` and is therefore accepted by `NestFactory.create()`:
+Instrumentation is opt-in through the **`instrument` application option**, which lives on `NestApplicationContextOptions` and is therefore accepted by `NestFactory.create()`. Read from the shipped `@nestjs/common@12.0.1` declarations, it takes exactly one field:
+
+```ts title="the relevant slice of NestApplicationContextOptions"
+interface InstrumentOption {
+  instrument?: {
+    // Decorates every instance the application context creates.
+    instanceDecorator: (instance: unknown) => unknown
+  }
+}
+```
+
+That is the whole mechanism, and it explains the design: Nest hands each provider it constructs to your function, and an observability SDK returns a wrapped instance whose methods are traced. It is a general-purpose hook, not an `@nestjs/observe` API — anything can supply the decorator.
 
 ```ts title="src/main.ts"
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module.js'
-import { instrumentation } from './observability/instrumentation.js'
+import { instanceDecorator } from './observability/instrumentation.js'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // Opt-in. Without this option nothing is instrumented.
-    instrument: instrumentation,
+    instrument: { instanceDecorator },
   })
 
   app.enableShutdownHooks()
@@ -361,12 +372,16 @@ async function bootstrap() {
 bootstrap()
 ```
 
-The package exports `createObserveModule`, a `TracerService`, a `TraceSpanDelegate` and a custom-metrics surface. It requires an `appKey`, an `appSecret` and a `serviceId`, and it posts to a hosted collector whose endpoint is overridable through an option and the `OBSERVE_ENDPOINT` environment variable. The concrete module wiring is in [Observability with @nestjs/observe](../nestjs-libraries/observe.md).
+`@nestjs/observe` exports `createInstanceDecorator` — a factory the module uses to produce exactly that function — plus `createObserveModule`, a `TracerService`, a `TraceSpanDelegate` and a custom-metrics surface. It requires an `appKey`, an `appSecret` and a `serviceId`, and it posts to a hosted collector whose endpoint is overridable through an option and the `OBSERVE_ENDPOINT` environment variable. The concrete module wiring is in [Observability with @nestjs/observe](../nestjs-libraries/observe.md).
+
+:::warning
+`instanceDecorator` runs for **every instance the container creates**. For singletons that is once each, at bootstrap, and costs nothing at request time. If your application has `Scope.REQUEST` providers it runs per request, per instance, on top of the construction cost those already carry — which is one more reason to keep request scope out of hot paths. See [Performance](performance.md).
+:::
 
 Three honest caveats before you adopt it:
 
 - **It is pre-1.0.** A `0.x` version carries no compatibility promise. Expect option names and exports to move.
-- **It exports no decorators.** There is no `@Trace()`, no `@Span()`, no `@Metric()` in 0.1.8. Instrumentation you add by hand goes through the tracer service.
+- **It exports no decorators.** There is no `@Trace()`, no `@Span()`, no `@Metric()` in 0.1.8 — `createInstanceDecorator` is a factory the module calls, not something you apply to a class. Instrumentation you add by hand goes through the tracer service.
 - **The wire contract to its collector is not a published specification.** The endpoint is configurable, which is not the same as it being OTLP-compatible. Do not plan on pointing it at your existing collector until that is confirmed.
 
 :::best-practice

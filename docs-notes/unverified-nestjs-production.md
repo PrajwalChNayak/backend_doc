@@ -9,47 +9,102 @@ pages `content/nestjs/esm-vs-commonjs.md`, `content/nestjs/configuration.md`,
 `content/nestjs-databases/health-checks.md` and
 `docs-notes/unverified-nestjs-libraries.md`.
 
-No npm tarball was unpacked during this pass (no Nest packages are installed under
-`examples/`). Everything below is therefore either (a) taken from the verified fact base,
-(b) a long-standing documented API, or (c) deliberately left out and recorded here.
+**Late addition — a second verification pass was possible.** Partway through this pass
+`@nestjs/core@12.0.1` and `@nestjs/common@12.0.1` became available on disk under
+`examples/nest-crud-module/node_modules/`, installed by a concurrent section pass. The
+shipped `.d.ts` files were then read directly, which promoted three items out of this
+file and surfaced one option the pages had been missing entirely. The
+"Verified by reading the shipped declarations" section below records what was confirmed;
+"Deliberately omitted" now holds only what remains genuinely unverifiable.
 
 ---
 
-## Deliberately omitted as unverifiable in this pass
+## Verified by reading the shipped declarations (second pass)
 
-### `@nestjs/observe` — the shape of the `instrument` option payload
+Source: `examples/nest-crud-module/node_modules/@nestjs/common/interfaces/` in
+`@nestjs/common@12.0.1`, and `@nestjs/core@12.0.1` alongside it.
 
-CONTRIBUTING §11.4 confirms that `@nestjs/observe` is **0.1.8**, that it is opt-in
-through the **`instrument` application option**, and that the option lives on
-`NestApplicationContextOptions` (so `NestFactory.create()` accepts it).
-`docs-notes/unverified-nestjs-libraries.md` additionally confirms the package's exports
-(`createObserveModule`, `TracerService`, `TraceSpanDelegate`, `custom-metrics`,
-`createInstanceDecorator`, `observe.constants`), that it exports **no decorators**, that
-`appKey`/`appSecret`/`serviceId` are required, and that the collector endpoint is
-overridable through an option and `OBSERVE_ENDPOINT`.
+### `instrument` — fully verified, and it is not an `@nestjs/observe` type
 
-**What is not verified:** the concrete *value* passed to `instrument` — whether it is the
-return of `createObserveModule(...)`, a module class, a factory, or a plain options
-object. `content/nestjs-production/observability.md` therefore shows the option being
-passed an imported `instrumentation` value from a local module and defers the concrete
-wiring to `content/nestjs-libraries/observe.md` (not yet written). No invented option
-names, no invented decorators.
+`NestApplicationContextOptions.instrument` is declared as:
 
-**Also omitted:** pricing, plan availability, retention, the dashboard feature set, and
-any claim that the collector is OTLP-compatible. The page states only that the endpoint
-is configurable and that the wire contract is not a published specification.
+```ts
+instrument?: {
+  instanceDecorator: (instance: unknown) => unknown
+}
+```
 
-### `forceCloseConnections` — the internal mechanism
+It is a **general-purpose hook**: Nest passes every instance the container creates to
+`instanceDecorator` and uses the returned value. It is not typed against `@nestjs/observe`
+at all, so any SDK — or your own code — can supply it.
 
-`forceCloseConnections` is a documented `NestApplicationOptions` field and is used on
-`content/nestjs-production/graceful-shutdown.md`, `docker.md` and
+`content/nestjs-production/observability.md` was corrected to show this exact shape
+(it previously showed a placeholder value passed straight to `instrument`, which would
+have been wrong). It also now notes that the decorator runs per instance, so it is
+per-request for `Scope.REQUEST` providers. `@nestjs/observe`'s `createInstanceDecorator`
+is the factory that produces such a function, which is consistent with
+`docs-notes/unverified-nestjs-libraries.md` describing it as "a factory the module calls
+internally, not a decorator you apply".
+
+### `forceCloseConnections` — verified
+
+`NestApplicationOptions.forceCloseConnections?: boolean`, documented in the declarations
+as: *"Force close open HTTP connections. Useful if restarting your application hangs due
+to keep-alive connections in the HTTP adapter."* The pages' description matches. The
+declarations do not name the underlying Node call, so the pages still describe only the
+observable behaviour and do not claim `closeIdleConnections()` versus
+`closeAllConnections()`.
+
+### `return503OnClosing` — newly found, and it was missing from the pages
+
+`NestApplicationOptions.return503OnClosing?: boolean`, `@default false`: *"Whether to
+return 503 Service Unavailable for new requests during the shutdown process, while
+allowing existing in-flight requests to complete."*
+
+This is a first-party answer to part of the deploy-time-502 problem and the pages did not
+mention it. Added to `graceful-shutdown.md` (with a table distinguishing it from the drain
+delay — a 503 is a *legible* failure, not a successful request, so it complements rather
+than replaces the delay), to `health-and-readiness-probes.md`, and to
 `deployment-checklist.md`.
 
-**Not verified:** whether it maps internally to `server.closeIdleConnections()` or to
-`server.closeAllConnections()`. The pages describe the observable behaviour ("open
-connections are closed rather than waited on") and explicitly say it does **not**
-distinguish an idle socket from one mid-response — which is why the drain delay is
-required before `app.close()`. No claim is made about which Node API it calls.
+### Lifecycle hook signatures — verified
+
+`onModuleInit()`, `onApplicationBootstrap()` and `onModuleDestroy()` take **no**
+arguments; `beforeApplicationShutdown(signal?: string)` and
+`onApplicationShutdown(signal?: string)` both receive the signal. The table in
+`graceful-shutdown.md` is correct as written.
+
+### `ConsoleLogger` options — verified
+
+`json?`, `structuredParams?` (`@default true`) and `flattenParams?` (`@default false`,
+and it requires `structuredParams`) all exist as documented in CONTRIBUTING §11.4. The
+`observability.md` snippet is correct.
+
+### Other `NestApplicationOptions` fields seen but not used
+
+`routeConflictPolicy`, `routeResolutionStrategy`, `preview`, `snapshot`,
+`moduleIdGeneratorAlgorithm`, `autoFlushLogs` (`@default true`), `forceConsole`,
+`rawBody`, `bodyParser`, `cors`, `httpsOptions`. None are production-operations topics,
+so none were introduced on these pages; `routeConflictPolicy` and
+`routeResolutionStrategy` belong to the routing pages, which already cover them.
+
+---
+
+## Deliberately omitted as unverifiable
+
+### `@nestjs/observe` — the hosted product
+
+`@nestjs/observe` itself is **not** installed under `examples/`, so only the facts already
+recorded in CONTRIBUTING §11.1/§11.4 and `docs-notes/unverified-nestjs-libraries.md` are
+used: version **0.1.8** (pre-1.0), exports `createObserveModule`, `TracerService`,
+`TraceSpanDelegate`, `custom-metrics`, `createInstanceDecorator` and `observe.constants`,
+exports **no decorators**, requires `appKey`/`appSecret`/`serviceId`, and has a collector
+endpoint overridable through an option and `OBSERVE_ENDPOINT`.
+
+**Omitted:** pricing, plan availability, retention, the dashboard feature set, the exact
+`createObserveModule` call signature, and any claim that the collector is OTLP-compatible.
+The page states only that the endpoint is configurable and that the wire contract is not a
+published specification.
 
 ### `nest deploy` — targets, flags and providers
 

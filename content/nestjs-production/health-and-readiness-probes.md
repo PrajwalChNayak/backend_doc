@@ -217,7 +217,11 @@ import { HealthController } from './health.controller.js'
 export class HealthModule {}
 ```
 
-It does nothing without `app.enableShutdownHooks()`, because nothing tells Terminus that shutdown has begun. Two configuration values have to agree with it:
+It does nothing without `app.enableShutdownHooks()`, because nothing tells Terminus that shutdown has begun.
+
+Pair it with `return503OnClosing: true` on `NestFactory.create()`, which makes Nest answer **any** new request during shutdown with a 503 while letting in-flight ones finish. Readiness then fails for two independent reasons — Terminus reporting `shutting_down`, and the application-level 503 — so a probe cannot accidentally report ready during teardown.
+
+Two configuration values have to agree with it:
 
 - **`readinessProbe.periodSeconds` must be small** — 2 with `failureThreshold: 2` means the flip is observed in about four seconds. A period of 30 means the flag is noticed long after the socket closed.
 - **`gracefulShutdownTimeoutMs` + your drain must fit inside `terminationGracePeriodSeconds`.** Too short and you drop requests; too long and `SIGKILL` arrives mid-drain anyway.

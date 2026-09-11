@@ -753,6 +753,39 @@ objects — read the payload with `msg.json()`.
 `NestApplicationContextOptions`. It is version **0.1.8** — say that it is new
 and pre-1.0.
 
+:::warning `instrument` is not an `@nestjs/observe` type
+The option is a **general-purpose hook** and is not typed against the SDK. Read
+verbatim from the shipped `@nestjs/common@12.0.1` declarations, it is:
+
+```ts
+instrument?: {
+  // Function that decorates each instance created by the application context.
+  instanceDecorator: (instance: unknown) => unknown
+}
+```
+
+`instanceDecorator` is **required**, takes one argument and returns the
+replacement instance. Do not write `instrument: someModule` or
+`instrument: createObserveModule(...)` — the value is always an object with that
+one field. `@nestjs/observe` exports `createInstanceDecorator`, but its signature
+is `(als, operationTraceRegistry, options)` — internal plumbing the module calls,
+not something a reader wires by hand.
+
+The hook runs for **every instance the container creates**: once per singleton at
+bootstrap, but per request for `Scope.REQUEST` providers.
+
+Note this option is **not new in v12** — it is present in `@nestjs/common@11.1.6`
+with the same shape. Do not label it a v12 addition.
+:::
+
+**`return503OnClosing`** (on `NestApplicationOptions`, `@default false`) **is**
+new in v12 — `@nestjs/common@11.1.6` has no such field. Verbatim: *“Whether to
+return 503 Service Unavailable for new requests during the shutdown process,
+while allowing existing in-flight requests to complete.”* It makes a request that
+arrives mid-shutdown fail *legibly* instead of as a connection reset the proxy
+reports as a 502. It is **not** a substitute for a drain delay: a 503 is still a
+failed request. Pair the two.
+
 **CLI:** new `nest deploy`; `nest build` and `nest start` gain `--rspackPath`,
 `--emit-declarations`, `--no-type-check`, `--silent` and
 `--parallel [concurrency]`; `nest-cli.json` gains `includeLibraryAssets`.

@@ -701,6 +701,25 @@ is two patterns that can match the same request, such as `/users/me` and
 throw new BadRequestException('Password is too weak', { errorCode: 'WEAK_PASSWORD' })
 ```
 
+:::warning It does not appear in the response body on its own
+Verified by reading the shipped `@nestjs/common@12.0.1` source, not the docs.
+
+`HttpException.createBody(arg0, arg1, statusCode, errorCode)` *does* take an
+`errorCode` fourth argument and copies it into the body — but **no built-in
+subclass passes it**. `BadRequestException` calls
+`createBody(objectOrError, description, HttpStatus.BAD_REQUEST)` with three
+arguments, and `BaseExceptionFilter` in `@nestjs/core` contains no reference to
+`errorCode` at all.
+
+So the line above sets `exception.errorCode` and nothing else. The default 400
+body is still `{ message, statusCode }`. To surface it you must either build the
+body yourself with the four-argument `createBody`, or write an exception filter
+that reads `exception.errorCode` and adds it.
+
+Never present `errorCode` as something that shows up in the response
+automatically — that is a silent no-op and a reader will lose an afternoon to it.
+:::
+
 **`ConsoleLogger`** treats a trailing plain object as structured params;
 `structuredParams` defaults to **`true`**. There is also `flattenParams`
 (default `false`), which spreads params into the root JSON object in `json` mode

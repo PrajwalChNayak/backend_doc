@@ -203,6 +203,7 @@ Every option below comes from `ValidationPipeOptions`, which extends `class-vali
 | `errorHttpStatusCode` | `400` | The status thrown on failure. `422` is the common alternative. |
 | `exceptionFactory` | — | `(errors: ValidationError[]) => any`. Return the exception to throw. Overrides `errorHttpStatusCode`. |
 | `stopAtFirstError` | `false` | Reports only the first failing constraint per property. |
+| `errorFormat` | `'list'` | New in v12. `'grouped'` changes the response `message` from `string[]` to `Record<string, string[]>`, keyed by property. See the warning below. |
 | `validateCustomDecorators` | `false` | Also validates values produced by custom `createParamDecorator` decorators. |
 | `groups` | — | Only runs constraints tagged with these validation groups. |
 | `always` | `false` | Runs constraints that declare no group even when `groups` is set. |
@@ -214,6 +215,18 @@ Every option below comes from `ValidationPipeOptions`, which extends `class-vali
 | `validationError.target` | `true` | Whether the failing object is attached to each `ValidationError`. |
 | `validationError.value` | `true` | Whether the failing **value** is attached to each `ValidationError`. |
 | `enableDebugMessages` | `false` | Logs class-validator warnings, such as a DTO with no decorators. |
+
+:::warning `errorFormat: 'grouped'` changes your response contract
+This is new in v12 and it is not a cosmetic switch. `@nestjs/common`'s own type
+declaration spells out the consequence: *"the `message` property in the error
+response changes from `string[]` to `Record<string, string[]>`. If you have
+exception filters or interceptors that assume `message` is always an array, they
+will need to be updated."*
+
+Grouped errors are genuinely nicer for a form UI — each field gets its own list.
+Just switch it deliberately, and check every filter and client that reads
+`message` first.
+:::
 | `expectedType` | — | Forces the pipe to validate against this class instead of the parameter's inferred metatype. |
 
 :::warning

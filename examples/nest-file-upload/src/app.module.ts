@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { HealthController } from './health.controller.js'
-import { UploadsModule } from './uploads/uploads.module.js'
+import { UploadsModule } from './files/uploads.module.js'
 
 @Module({
   imports: [UploadsModule],

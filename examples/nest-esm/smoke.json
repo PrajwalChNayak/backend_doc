@@ -1,0 +1,10 @@
+{
+  "port": 3040,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/", "expect": 200 },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}

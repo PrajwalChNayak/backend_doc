@@ -1,0 +1,17 @@
+{
+  "port": 3039,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/products/search?q=key", "expect": 200 },
+    { "method": "GET", "path": "/products/search?q=%25%27%20OR%20%271%27%3D%271", "expect": 200 },
+    { "method": "GET", "path": "/products?sort=name", "expect": 200 },
+    { "method": "GET", "path": "/products?sort=id;DROP+TABLE+users", "expect": 400 },
+    { "method": "GET", "path": "/orders", "headers": { "x-user-id": "1" }, "expect": 200 },
+    { "method": "GET", "path": "/orders/1", "headers": { "x-user-id": "1" }, "expect": 200 },
+    { "method": "GET", "path": "/orders/2", "headers": { "x-user-id": "1" }, "expect": 404 },
+    { "method": "GET", "path": "/orders/not-a-number", "headers": { "x-user-id": "1" }, "expect": 400 },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}

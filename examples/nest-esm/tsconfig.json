@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
+    "lib": ["es2023"],
+    "types": ["node"],
+
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // The ESM-specific settings. `nodenext` above already implies ESM output
+    // because package.json says "type": "module"; these two make the intent
+    // explicit and are what CONTRIBUTING §11.4 lists for opting into ESM.
+    "resolvePackageJsonExports": true,
+    "verbatimModuleSyntax": false,
+
+    "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
+
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"]
+}

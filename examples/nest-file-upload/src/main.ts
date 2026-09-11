@@ -1,5 +1,5 @@
 import { createApp } from './app-factory.js'
-import { UPLOAD_DIR } from './uploads/uploads.service.js'
+import { UPLOAD_DIR } from './files/uploads.service.js'
 
 const PORT = Number(process.env.PORT ?? 3037)
 

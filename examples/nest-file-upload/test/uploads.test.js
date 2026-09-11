@@ -8,7 +8,7 @@ const assert = require('node:assert/strict')
 const request = require('supertest')
 
 const { createApp } = require('../dist/app-factory.js')
-const { MAX_BYTES } = require('../dist/uploads/uploads.controller.js')
+const { MAX_BYTES } = require('../dist/files/uploads.controller.js')
 
 /** Smallest honest fixtures: a real GIF89a header, a real %PDF- header. */
 const GIF = Buffer.concat([

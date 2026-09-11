@@ -1,3 +1,5 @@
 node_modules/
 dist/
-uploads/
+# Runtime upload directory (default is the OS temp dir; only anchored so it
+# never matches the src/uploads/ SOURCE directory).
+/uploads/

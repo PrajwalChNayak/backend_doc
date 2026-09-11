@@ -31,6 +31,10 @@ examples/**/*.sqlite
 examples/**/*.sqlite3
 examples/**/*.db
 examples/**/data/
-examples/**/uploads/
+# Runtime upload storage only. This deliberately does NOT match a source
+# directory named `uploads` — an earlier `examples/**/uploads/` silently
+# ignored `src/uploads/`, so a whole source folder never got committed.
+examples/*/uploads/
+examples/*/tmp/uploads/
 examples/**/.env
 .env

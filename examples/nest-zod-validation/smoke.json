@@ -1,0 +1,19 @@
+{
+  "port": 3032,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/tasks?limit=1", "expect": 200 },
+    { "method": "GET", "path": "/tasks?limit=0", "expect": 400 },
+    { "method": "GET", "path": "/tasks?bogus=1", "expect": 400 },
+    { "method": "POST", "path": "/tasks", "body": { "title": "schema-first", "ownerEmail": "ada@example.com" }, "expect": 201 },
+    { "method": "POST", "path": "/tasks", "body": { "title": "x", "ownerEmail": "nope" }, "expect": 400 },
+    { "method": "POST", "path": "/tasks", "body": { "title": "x", "isAdmin": true }, "expect": 400 },
+    { "method": "POST", "path": "/tasks", "body": { "title": "" }, "expect": 400 },
+    { "method": "GET", "path": "/tasks/not-a-uuid", "expect": 400 },
+    { "method": "GET", "path": "/tasks/2a9f0b24-3f6a-4c1e-9f6d-0b1f4b0c9a11", "expect": 404 },
+    { "method": "PATCH", "path": "/tasks/2a9f0b24-3f6a-4c1e-9f6d-0b1f4b0c9a11", "body": { "status": "done" }, "expect": 404 },
+    { "method": "GET", "path": "/nope", "expect": 404 }
+  ]
+}

@@ -411,8 +411,19 @@ async function main() {
             err(`${rel}:${i + 1 + lineOffset}`, `NestJS 11 idiom outside the migration section: ${label}`)
           }
         }
-        for (const { re, label } of BAD_NEST_ROUTE_PATTERNS) {
-          if (re.test(lines[i])) err(`${rel}:${i + 1 + lineOffset}`, `invalid Nest 12 route pattern: ${label}`)
+        // These patterns are invalid on the Express adapter, which is the
+        // default and what almost every page shows. They are NOT invalid on
+        // Fastify, whose router (find-my-way) accepts a bare wildcard and
+        // trailing optional params. A page documenting that difference can opt
+        // out per line with `// check:allow-path <why>`, on the line or the one
+        // above — the same shape as the SQL linter's `// lint-sql:allow`.
+        const pathAllowed =
+          lines[i].includes('check:allow-path') ||
+          (i > 0 && lines[i - 1].includes('check:allow-path'))
+        if (!pathAllowed) {
+          for (const { re, label } of BAD_NEST_ROUTE_PATTERNS) {
+            if (re.test(lines[i])) err(`${rel}:${i + 1 + lineOffset}`, `invalid Nest 12 route pattern: ${label}`)
+          }
         }
       }
     }

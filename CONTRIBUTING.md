@@ -764,7 +764,15 @@ existing CommonJS apps are unaffected.
    - `from 'nats'` or `require('nats')` — the moved package
    - `subscriptions-transport-ws`
    - `@Get('*')`, `@Get(':a.:b?')` and the other Express 4 path forms in a Nest
-     route decorator
+     route decorator.
+
+     These are invalid on the **Express** adapter, which is the default and what
+     nearly every page shows. They are *valid* on **Fastify**, whose router
+     (`find-my-way`) accepts a bare wildcard and trailing optional params. A page
+     documenting that difference can opt out per line with
+     `// check:allow-path <why>`, on the line or the one above — the same shape
+     as the SQL linter's `// lint-sql:allow`. Use it only for a genuinely
+     adapter-specific example, never to silence a real mistake.
    - a Joi `validationOptions` that is not nested under `libraryOptions`
 6. **Cross-link, do not duplicate.** The Node, Express, security and database
    material from Part 1 is still correct and still applies. A NestJS page should

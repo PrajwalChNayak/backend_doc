@@ -1,0 +1,21 @@
+{
+  "port": 3031,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/tasks", "expect": 200 },
+    { "method": "GET", "path": "/tasks?limit=1&status=todo", "expect": 200 },
+    { "method": "GET", "path": "/tasks?limit=500", "expect": 400 },
+    { "method": "GET", "path": "/tasks?nope=1", "expect": 400 },
+    { "method": "GET", "path": "/tasks/not-a-uuid", "expect": 400 },
+    { "method": "GET", "path": "/tasks/2a9f0b24-3f6a-4c1e-9f6d-0b1f4b0c9a11", "expect": 404 },
+    { "method": "POST", "path": "/tasks", "body": { "title": "no key" }, "expect": 401 },
+    { "method": "POST", "path": "/tasks", "headers": { "x-api-key": "dev-secret-key" }, "body": { "title": "smoke task", "status": "todo" }, "expect": 201 },
+    { "method": "POST", "path": "/tasks", "headers": { "x-api-key": "dev-secret-key" }, "body": { "title": "mass assignment", "isAdmin": true }, "expect": 400 },
+    { "method": "POST", "path": "/tasks", "headers": { "x-api-key": "dev-secret-key" }, "body": { "title": "" }, "expect": 400 },
+    { "method": "PATCH", "path": "/tasks/2a9f0b24-3f6a-4c1e-9f6d-0b1f4b0c9a11", "headers": { "x-api-key": "dev-secret-key" }, "body": { "status": "done" }, "expect": 404 },
+    { "method": "DELETE", "path": "/tasks/2a9f0b24-3f6a-4c1e-9f6d-0b1f4b0c9a11", "expect": 401 },
+    { "method": "GET", "path": "/nope", "expect": 404 }
+  ]
+}

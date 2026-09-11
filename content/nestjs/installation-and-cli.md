@@ -153,7 +153,7 @@ The CLI reads its configuration from `nest-cli.json` at the project root.
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": [{ "include": "mail/templates/**/*.hbs", "watchAssets": true }],
-    "includeLibraryAssets": true
+    "includeLibraryAssets": ["shared-mail", "shared-pdf"]
   }
 }
 ```
@@ -161,6 +161,8 @@ The CLI reads its configuration from `nest-cli.json` at the project root.
 `assets` copies non-TypeScript files into `dist/` — templates, `.sql` migration files, `.graphql` documents — because `tsc` only emits what it compiles. Forgetting it is the classic "works in dev, 500s in production" bug: `nest start` runs from source-adjacent paths, the built artifact does not.
 
 **`includeLibraryAssets` is new in v12.** In a monorepo, it extends asset copying to the assets declared by libraries the application depends on, instead of only the application's own. Without it, a shared library that ships templates silently contributes nothing to `dist/`.
+
+It takes an **array of library project names**, not a boolean — `@nestjs/cli@12.0.0` declares it as `includeLibraryAssets?: string[]` and iterates it as a list. Setting it to `true` type-checks against nothing and copies nothing, which is the worst kind of configuration bug: silent.
 
 ## `nest upgrade`
 

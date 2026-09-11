@@ -1,0 +1,14 @@
+{
+  "port": 3030,
+  "entry": "dist/main.js",
+  "requiresService": false,
+  "requests": [
+    { "method": "GET", "path": "/health", "expect": 200 },
+    { "method": "GET", "path": "/", "expect": 200 },
+    { "method": "GET", "path": "/greet/Ada", "expect": 200 },
+    { "method": "GET", "path": "/greet/%3Cscript%3E", "expect": 404 },
+    { "method": "GET", "path": "/echo?msg=hello", "expect": 200 },
+    { "method": "POST", "path": "/echo?tag=t", "body": {}, "expect": 201 },
+    { "method": "GET", "path": "/no-such-route", "expect": 404 }
+  ]
+}
